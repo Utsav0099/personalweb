@@ -178,7 +178,7 @@
     <div class="game-section">
       <div class="maze-title hyper-text">💋 Virtual Kiss Counter</div>
       <div id="kissDisplay" class="hyper-text">0 Kisses Given ❤️</div>
-      <button id="kissBtn" class="big-btn hyper-btn">Kiss Ankita Right Now 😘</button>
+      <button id="kissBtn" class="big-btn hyper-btn">Kiss me Right Now 😘</button>
       <div id="streak" class="hyper-text">Streak: 0 🔥</div>
     </div>
 
@@ -213,13 +213,7 @@
       <div id="generatedLetter" class="love-note"></div>
     </div>
 
-    <!-- Playlist -->
-    <div class="game-section">
-      <div class="maze-title hyper-text">🎵 Our Romantic Playlist</div>
-      <div id="playlist"></div>
-    </div>
-
-    <footer class="hyper-text">with infinite love, your Utsav 💖</footer>
+        <footer class="hyper-text">with infinite love, your Utsav 💖</footer>
   </div>
 
   <script>
@@ -407,8 +401,8 @@
       // === LOVE QUIZ (dummy) ===
       const quizDiv = document.getElementById('quizContainer');
       let questions = [
-        { q: 'What is my favorite nickname for you?', a: ['Baby', 'Honey', 'Ankita', 'Jaan'], correct: 2 },
-        { q: 'Where did we first meet?', a: ['Cafe', 'Park', 'College', 'Online'], correct: 3 }
+        { q: 'What is my favorite nickname for you?', a: ['Baby', 'Honey', 'Kanchi', 'Anku'], correct: 2 },
+        { q: 'Where did we first meet?', a: ['Online', 'Park', 'College', 'Iskon'], correct: 3 }
       ];
       let qIndex = 0;
       function loadQuiz() {
@@ -428,7 +422,7 @@
       // === FORTUNE ===
       const fortuneBtn = document.getElementById('fortuneBtn');
       const fortuneRes = document.getElementById('fortuneResult');
-      const fortunes = ['You will receive a hug today', 'Ankita loves you more than stars', 'A sweet surprise awaits', 'Your love grows stronger every second'];
+      const fortunes = ['I will wanna give you a  tight hug today', 'Utsav loves you more than stars', 'A sweet surprise awaits', 'Our love grows stronger every second'];
       fortuneBtn.addEventListener('click', () => {
         fortuneRes.innerText = fortunes[Math.floor(Math.random()*fortunes.length)] + ' 💫';
         createHyperBurst(15);
