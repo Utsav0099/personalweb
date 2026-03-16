@@ -4,14 +4,112 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
   <title>For My Babe Ankita 💕</title>
-  <link rel="stylesheet" href="style.css">
+  <style>
+    /* === RESET & GLOBAL === */
+    * { margin:0; padding:0; box-sizing:border-box; user-select:none; -webkit-tap-highlight-color:transparent; }
+    body {
+      min-height:100vh;
+      background: linear-gradient(-45deg, #ff758c, #ff7eb3, #ff9a9e, #fecfef, #ff69b4);
+      background-size: 600% 600%;
+      animation: gradient 10s ease infinite;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      overflow-x: hidden;
+      cursor: url('data:image/svg+xml;utf8,<svg xmlns=%27http://www.w3.org/2000/svg%27 width=%2720%27 height=%2720%27><text y=%2718%27 font-size=%2720%27>💖</text></svg>') 10 10, auto;
+    }
+    @keyframes gradient { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
+
+    /* === WELCOME SCREEN === */
+    #welcomeScreen {
+      position: fixed; inset:0; display: flex; flex-direction: column; align-items: center; justify-content: center;
+      background: rgba(255,255,255,0.3); backdrop-filter: blur(15px); z-index: 100;
+      transition: opacity 0.8s ease;
+    }
+    #welcomeScreen.hidden { opacity:0; pointer-events:none; }
+
+    /* === MAIN CONTAINER (glassmorphism) === */
+    .container {
+      max-width: 520px; margin: 20px auto; padding: 35px 25px;
+      background: rgba(255,255,255,0.25);
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      border-radius: 50px;
+      border: 2px solid rgba(255,255,255,0.5);
+      box-shadow: 0 30px 60px rgba(255,105,180,0.3), inset 0 0 40px rgba(255,255,255,0.6);
+    }
+
+    /* === HYPER TEXT / BUTTONS === */
+    .hyper-text { animation: rainbowText 4s linear infinite; text-shadow: 0 0 20px #fff; }
+    @keyframes rainbowText { 0%{color:#ff4b2b} 20%{color:#ff9a9e} 40%{color:#fecfef} 60%{color:#ff69b4} 80%{color:#ff416c} 100%{color:#ff4b2b} }
+
+    .hyper-btn {
+      position: relative; overflow: hidden; transition: all 0.3s cubic-bezier(0.175,0.885,0.32,1.275);
+      box-shadow: 0 10px 30px rgba(255,65,108,0.5);
+      border: none; background: rgba(255,255,240,0.8); padding: 12px 25px; border-radius: 60px;
+      font-weight: bold; font-size: 1.1rem; margin: 8px; cursor: pointer;
+    }
+    .hyper-btn:active { transform: scale(1.3) rotate(10deg) !important; box-shadow: 0 0 60px #ff69b4; }
+
+    .love-note, .game-section {
+      background: rgba(255,255,255,0.35);
+      border-radius: 35px;
+      padding: 25px;
+      margin: 25px 0;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+      border: 1px solid rgba(255,255,255,0.6);
+      text-align: center;
+    }
+
+    /* === LOVE METER === */
+    .love-meter {
+      background: linear-gradient(to right, #ff69b4, #ffd700);
+      color: white; padding: 10px 20px; border-radius: 50px;
+      text-align: center; font-weight: bold; box-shadow: 0 0 25px #ffd700;
+      margin: 20px 0;
+    }
+
+    /* === MAZE CONTROLS === */
+    .maze-controls { display: flex; gap: 5px; justify-content: center; margin: 15px 0; }
+    .arrow-btn { font-size: 2rem; padding: 5px 20px; }
+
+    /* === MOVING BUTTON GAME === */
+    .annoying-area { position: relative; min-height: 120px; }
+    #movingButton { position: absolute; left:20px; top:20px; transition: left 0.2s, top 0.2s; }
+
+    /* === MEMORY GRID === */
+    .memory-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; max-width: 300px; margin: 10px auto; }
+    .memory-card { aspect-ratio: 1/1; background: #ffb6c1; border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 2rem; box-shadow: 0 0 15px hotpink; cursor: pointer; transition: 0.2s; border: 2px solid white; }
+    .memory-card.flipped { background: #fff0f5; transform: scale(0.95); }
+
+    /* === GALLERY GRID === */
+    .gallery-grid { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 15px; }
+    .gallery-grid img { width: 80px; height: 80px; object-fit: cover; border-radius: 20px; border: 3px solid white; }
+
+    /* === RUNNER CANVAS === */
+    #runnerCanvas { background: #ffd1dc; border-radius: 30px; margin: 10px auto; display: block; border: 3px solid white; }
+
+    /* === HEARTS CONFETTI === */
+    .heart {
+      position: fixed; pointer-events: none; z-index: 9999;
+      animation: hyperFloat 3.5s linear forwards;
+      font-size: 30px;
+    }
+    @keyframes hyperFloat {
+      0% { transform: translateY(0) rotate(0deg); opacity:1; }
+      100% { transform: translateY(-120vh) rotate(360deg); opacity:0; }
+    }
+
+    /* === HIDDEN MESSAGE === */
+    .hidden-message { margin: 10px; font-weight: bold; color: crimson; }
+
+    /* === FOOTER === */
+    footer { text-align: center; margin-top: 30px; font-size: 1.3rem; }
+  </style>
 </head>
 <body>
   <audio id="bgMusic" loop>
     <source src="music.mp3" type="audio/mpeg">
   </audio>
 
-  <!-- Welcome -->
+  <!-- Welcome Screen -->
   <div id="welcomeScreen">
     <h2 class="hyper-text">A special surprise for Ankita 💌</h2>
     <button class="open-btn hyper-btn" id="startBtn">Tap to Open My Heart 💕</button>
@@ -19,7 +117,8 @@
 
   <div class="hearts" id="heartsContainer"></div>
 
-  <div class="container" id="mainContent">
+  <!-- Main Content (initially hidden) -->
+  <div class="container" id="mainContent" style="display: none;">
     <div class="header">
       <h1 class="hyper-text">💞 For My Eternal Babe Ankita 💞</h1>
       <div id="loveMeter" class="love-meter">Our Love: <span id="lovePercent">100</span>% ❤️</div>
@@ -55,21 +154,366 @@
     </div>
     <div class="hidden-message" id="annoyingMessage"></div>
 
-    <!-- Memory, Quiz, Fortune, Kiss, Clicker, Gallery, Runner, Letter, Playlist -->
-    <!-- (All 11 games are already in your script.js — they will appear automatically) -->
-    <div class="game-section"><div class="maze-title hyper-text">💑 Memory Match of Our Love 💑</div><div id="memoryGrid" class="memory-grid"></div><button class="maze-reset hyper-btn" id="resetMemory">New Game ❤️</button></div>
-    <div class="game-section"><div class="maze-title hyper-text">❤️ Love Quiz</div><div id="quizContainer"></div></div>
-    <div class="game-section"><div class="maze-title hyper-text">🌟 Daily Love Fortune</div><button class="maze-reset hyper-btn" id="fortuneBtn">Tell me something sweet 💌</button><div id="fortuneResult" class="love-note"></div></div>
-    <div class="game-section"><div class="maze-title hyper-text">💋 Virtual Kiss Counter</div><div id="kissDisplay" class="hyper-text">0 Kisses Given ❤️</div><button id="kissBtn" class="big-btn hyper-btn">Kiss Ankita Right Now 😘</button><div id="streak" class="hyper-text">Streak: 0 🔥</div></div>
-    <div class="game-section"><div class="maze-title hyper-text">❤️ Love Clicker</div><button id="heartClicker" class="hyper-btn">💖</button><div id="points" class="hyper-text">Love Points: 0</div><button id="upgradeBtn" class="maze-reset hyper-btn">Buy Auto-Kisses (50 pts)</button></div>
-    <div class="game-section"><div class="maze-title hyper-text">📸 Our Beautiful Memories</div><input type="file" id="uploadPhoto" multiple accept="image/*"><div id="gallery" class="gallery-grid"></div></div>
-    <div class="game-section"><div class="maze-title hyper-text">🏃‍♀️ Run to Forever</div><canvas id="runnerCanvas" width="300" height="150"></canvas><button id="startRunner" class="maze-reset hyper-btn">Start Running to Her ❤️</button><div id="runnerScore" class="hyper-text">Distance: 0m</div></div>
-    <div class="game-section"><div class="maze-title hyper-text">✉️ Love Letter Generator</div><textarea id="letterInput" placeholder="Type something sweet..."></textarea><button id="generateLetter" class="maze-reset hyper-btn">Make it Romantic 💌</button><div id="generatedLetter" class="love-note"></div></div>
-    <div class="game-section"><div class="maze-title hyper-text">🎵 Our Romantic Playlist</div><div id="playlist"></div></div>
+    <!-- Memory Match -->
+    <div class="game-section">
+      <div class="maze-title hyper-text">💑 Memory Match of Our Love 💑</div>
+      <div id="memoryGrid" class="memory-grid"></div>
+      <button class="maze-reset hyper-btn" id="resetMemory">New Game ❤️</button>
+    </div>
+
+    <!-- Love Quiz -->
+    <div class="game-section">
+      <div class="maze-title hyper-text">❤️ Love Quiz</div>
+      <div id="quizContainer"></div>
+    </div>
+
+    <!-- Daily Fortune -->
+    <div class="game-section">
+      <div class="maze-title hyper-text">🌟 Daily Love Fortune</div>
+      <button class="maze-reset hyper-btn" id="fortuneBtn">Tell me something sweet 💌</button>
+      <div id="fortuneResult" class="love-note"></div>
+    </div>
+
+    <!-- Kiss Counter -->
+    <div class="game-section">
+      <div class="maze-title hyper-text">💋 Virtual Kiss Counter</div>
+      <div id="kissDisplay" class="hyper-text">0 Kisses Given ❤️</div>
+      <button id="kissBtn" class="big-btn hyper-btn">Kiss Ankita Right Now 😘</button>
+      <div id="streak" class="hyper-text">Streak: 0 🔥</div>
+    </div>
+
+    <!-- Love Clicker -->
+    <div class="game-section">
+      <div class="maze-title hyper-text">❤️ Love Clicker</div>
+      <button id="heartClicker" class="hyper-btn">💖</button>
+      <div id="points" class="hyper-text">Love Points: 0</div>
+      <button id="upgradeBtn" class="maze-reset hyper-btn">Buy Auto-Kisses (50 pts)</button>
+    </div>
+
+    <!-- Memory Gallery -->
+    <div class="game-section">
+      <div class="maze-title hyper-text">📸 Our Beautiful Memories</div>
+      <input type="file" id="uploadPhoto" multiple accept="image/*">
+      <div id="gallery" class="gallery-grid"></div>
+    </div>
+
+    <!-- Runner Game -->
+    <div class="game-section">
+      <div class="maze-title hyper-text">🏃‍♀️ Run to Forever</div>
+      <canvas id="runnerCanvas" width="300" height="150"></canvas>
+      <button id="startRunner" class="maze-reset hyper-btn">Start Running to Her ❤️</button>
+      <div id="runnerScore" class="hyper-text">Distance: 0m</div>
+    </div>
+
+    <!-- Love Letter Generator -->
+    <div class="game-section">
+      <div class="maze-title hyper-text">✉️ Love Letter Generator</div>
+      <textarea id="letterInput" placeholder="Type something sweet..."></textarea>
+      <button id="generateLetter" class="maze-reset hyper-btn">Make it Romantic 💌</button>
+      <div id="generatedLetter" class="love-note"></div>
+    </div>
+
+    <!-- Playlist -->
+    <div class="game-section">
+      <div class="maze-title hyper-text">🎵 Our Romantic Playlist</div>
+      <div id="playlist"></div>
+    </div>
 
     <footer class="hyper-text">with infinite love, your Utsav 💖</footer>
   </div>
 
-  <script src="script.js"></script>
+  <script>
+    (function() {
+      // === WELCOME SCREEN TRANSITION ===
+      const welcome = document.getElementById('welcomeScreen');
+      const main = document.getElementById('mainContent');
+      const startBtn = document.getElementById('startBtn');
+      const bgMusic = document.getElementById('bgMusic');
+
+      startBtn.addEventListener('click', () => {
+        welcome.classList.add('hidden');
+        main.style.display = 'block';
+        bgMusic.play().catch(() => {}); // autoplay may be blocked, but try
+        createHyperBurst(30); // celebration
+      });
+
+      // === LOVE METER (increase with every click) ===
+      let loveLevel = 100;
+      const loveSpan = document.getElementById('lovePercent');
+      function increaseLove() {
+        loveLevel = Math.min(100, loveLevel + 2);
+        loveSpan.textContent = loveLevel;
+      }
+      document.addEventListener('click', (e) => {
+        if (e.target.tagName === 'BUTTON' || e.target.closest('button')) increaseLove();
+      });
+
+      // === HYPER BURST (confetti + hearts) ===
+      function createHyperBurst(count = 40) {
+        for(let i=0; i<count; i++) {
+          const h = document.createElement('div');
+          h.className = 'heart';
+          h.textContent = ['❤️','💖','💗','🌹','💕','✨','💘','💝'][Math.floor(Math.random()*8)];
+          h.style.left = Math.random()*100 + 'vw';
+          h.style.top = (Math.random()*30 + 70) + 'vh'; // start near bottom
+          h.style.fontSize = (Math.random()*40 + 20) + 'px';
+          h.style.animationDuration = (Math.random()*2 + 2.5) + 's';
+          document.body.appendChild(h);
+          setTimeout(() => h.remove(), 4500);
+        }
+      }
+      document.addEventListener('click', (e) => {
+        if (e.target.tagName === 'BUTTON' || e.target.tagName === 'CANVAS') createHyperBurst(20);
+      });
+
+      // === MAZE GAME (simple) ===
+      const canvas = document.getElementById('mazeCanvas');
+      const ctx = canvas.getContext('2d');
+      let mazeGrid = [
+        [1,1,1,1,1],
+        [1,0,1,0,1],
+        [1,0,0,0,1],
+        [1,1,1,0,1],
+        [1,1,1,2,1]
+      ];
+      let playerPos = { x:1, y:1 };
+      const cellSize = 60;
+
+      function drawMaze() {
+        ctx.clearRect(0,0,300,300);
+        for(let r=0; r<5; r++) {
+          for(let c=0; c<5; c++) {
+            if(mazeGrid[r][c] === 1) { // wall
+              ctx.fillStyle = '#c06c84';
+              ctx.fillRect(c*cellSize, r*cellSize, cellSize-2, cellSize-2);
+            } else if(mazeGrid[r][c] === 2) { // goal
+              ctx.fillStyle = '#ffd700';
+              ctx.fillRect(c*cellSize, r*cellSize, cellSize-2, cellSize-2);
+              ctx.fillStyle = 'red';
+              ctx.font = '30px sans-serif';
+              ctx.fillText('💖', c*cellSize+15, r*cellSize+45);
+            } else {
+              ctx.fillStyle = '#fae3e3';
+              ctx.fillRect(c*cellSize, r*cellSize, cellSize-2, cellSize-2);
+            }
+          }
+        }
+        // draw player
+        ctx.fillStyle = '#ff69b4';
+        ctx.beginPath();
+        ctx.arc(playerPos.x*cellSize+30, playerPos.y*cellSize+30, 20, 0, 2*Math.PI);
+        ctx.fill();
+      }
+
+      function movePlayer(dx, dy) {
+        let newX = playerPos.x + dx;
+        let newY = playerPos.y + dy;
+        if(newX>=0 && newX<5 && newY>=0 && newY<5 && mazeGrid[newY][newX] !== 1) {
+          playerPos.x = newX;
+          playerPos.y = newY;
+          drawMaze();
+          if(mazeGrid[newY][newX] === 2) {
+            alert('✨ You reached the heart! I love you Ankita! ✨');
+            createHyperBurst(60);
+          }
+        }
+      }
+
+      document.getElementById('moveUp').addEventListener('click', () => movePlayer(0,-1));
+      document.getElementById('moveDown').addEventListener('click', () => movePlayer(0,1));
+      document.getElementById('moveLeft').addEventListener('click', () => movePlayer(-1,0));
+      document.getElementById('moveRight').addEventListener('click', () => movePlayer(1,0));
+      document.getElementById('resetMaze').addEventListener('click', () => {
+        playerPos = { x:1, y:1 };
+        drawMaze();
+      });
+      drawMaze();
+
+      // === MOVING BUTTON GAME ===
+      const movingBtn = document.getElementById('movingButton');
+      const easyBtn = document.getElementById('easyButton');
+      const stopBtn = document.getElementById('stopMovingBtn');
+      const annoyingMsg = document.getElementById('annoyingMessage');
+      let moveInterval;
+      function startMoving() {
+        if(moveInterval) clearInterval(moveInterval);
+        moveInterval = setInterval(() => {
+          if (!movingBtn) return;
+          let area = document.querySelector('.annoying-area');
+          let maxX = area.clientWidth - movingBtn.offsetWidth - 20;
+          let maxY = area.clientHeight - movingBtn.offsetHeight - 20;
+          if(maxX<10) maxX=100; if(maxY<10) maxY=50;
+          movingBtn.style.left = Math.random() * maxX + 'px';
+          movingBtn.style.top = Math.random() * maxY + 'px';
+        }, 400);
+      }
+      startMoving();
+      movingBtn.addEventListener('mouseenter', () => {
+        annoyingMsg.innerText = '😜 Almost!';
+      });
+      movingBtn.addEventListener('click', () => {
+        annoyingMsg.innerText = '💥 You caught me! Have a kiss! 💋';
+        createHyperBurst(30);
+      });
+      easyBtn.addEventListener('click', () => {
+        annoyingMsg.innerText = '💕 You clicked the easy button! Love you!';
+        createHyperBurst(20);
+      });
+      stopBtn.addEventListener('click', () => {
+        clearInterval(moveInterval);
+        movingBtn.style.left = '50%';
+        movingBtn.style.top = '50%';
+        annoyingMsg.innerText = '🛑 Moving stopped. Now catch me!';
+      });
+
+      // === MEMORY MATCH (simplified) ===
+      const memoryGrid = document.getElementById('memoryGrid');
+      const resetMemory = document.getElementById('resetMemory');
+      let memoryCards = ['💕','💖','💗','💘','💕','💖','💗','💘'];
+      let flipped = [];
+      let matched = [];
+      function shuffle(arr) { return arr.sort(()=>Math.random()-0.5); }
+      function renderMemory() {
+        let shuffled = shuffle([...memoryCards]);
+        memoryGrid.innerHTML = '';
+        shuffled.forEach((sym, idx) => {
+          let card = document.createElement('div');
+          card.className = 'memory-card';
+          card.dataset.index = idx;
+          card.dataset.symbol = sym;
+          card.textContent = flipped.includes(idx) || matched.includes(idx) ? sym : '❓';
+          if(matched.includes(idx)) card.style.background = '#c0f0c0';
+          card.addEventListener('click', (e) => {
+            let i = e.currentTarget.dataset.index;
+            if(flipped.length===2 || matched.includes(+i) || flipped.includes(+i)) return;
+            flipped.push(+i);
+            renderMemory();
+            if(flipped.length===2) {
+              let card1 = shuffled[flipped[0]];
+              let card2 = shuffled[flipped[1]];
+              if(card1 === card2) {
+                matched.push(...flipped);
+                createHyperBurst(10);
+              }
+              setTimeout(() => { flipped = []; renderMemory(); }, 600);
+            }
+          });
+          memoryGrid.appendChild(card);
+        });
+      }
+      resetMemory.addEventListener('click', () => { flipped = []; matched = []; renderMemory(); });
+      renderMemory();
+
+      // === LOVE QUIZ (dummy) ===
+      const quizDiv = document.getElementById('quizContainer');
+      let questions = [
+        { q: 'What is my favorite nickname for you?', a: ['Baby', 'Honey', 'Ankita', 'Jaan'], correct: 2 },
+        { q: 'Where did we first meet?', a: ['Cafe', 'Park', 'College', 'Online'], correct: 3 }
+      ];
+      let qIndex = 0;
+      function loadQuiz() {
+        let q = questions[qIndex % questions.length];
+        quizDiv.innerHTML = `<p>${q.q}</p>` + q.a.map((opt, i) => `<button class="hyper-btn quiz-opt">${opt}</button>`).join('');
+        document.querySelectorAll('.quiz-opt').forEach((btn, idx) => {
+          btn.addEventListener('click', () => {
+            if(idx === q.correct) { alert('Correct! 💞'); createHyperBurst(20); }
+            else alert('Try again 😘');
+            qIndex++;
+            loadQuiz();
+          });
+        });
+      }
+      loadQuiz();
+
+      // === FORTUNE ===
+      const fortuneBtn = document.getElementById('fortuneBtn');
+      const fortuneRes = document.getElementById('fortuneResult');
+      const fortunes = ['You will receive a hug today', 'Ankita loves you more than stars', 'A sweet surprise awaits', 'Your love grows stronger every second'];
+      fortuneBtn.addEventListener('click', () => {
+        fortuneRes.innerText = fortunes[Math.floor(Math.random()*fortunes.length)] + ' 💫';
+        createHyperBurst(15);
+      });
+
+      // === KISS COUNTER ===
+      let kisses = 0, streak = 0;
+      const kissDisplay = document.getElementById('kissDisplay');
+      const streakSpan = document.getElementById('streak');
+      document.getElementById('kissBtn').addEventListener('click', () => {
+        kisses++; streak++;
+        kissDisplay.innerText = kisses + ' Kisses Given ❤️';
+        streakSpan.innerText = 'Streak: ' + streak + ' 🔥';
+        createHyperBurst(25);
+      });
+
+      // === LOVE CLICKER ===
+      let points = 0;
+      let autoActive = false;
+      document.getElementById('heartClicker').addEventListener('click', () => {
+        points+=5; document.getElementById('points').innerText = 'Love Points: '+points;
+      });
+      document.getElementById('upgradeBtn').addEventListener('click', () => {
+        if(points>=50) {
+          points-=50; autoActive=true; document.getElementById('points').innerText = 'Love Points: '+points;
+          setInterval(() => { if(autoActive) { points+=2; document.getElementById('points').innerText = 'Love Points: '+points; } }, 3000);
+        }
+      });
+
+      // === GALLERY ===
+      const upload = document.getElementById('uploadPhoto');
+      const galleryDiv = document.getElementById('gallery');
+      upload.addEventListener('change', (e) => {
+        [...e.target.files].forEach(file => {
+          let reader = new FileReader();
+          reader.onload = (ev) => {
+            let img = document.createElement('img');
+            img.src = ev.target.result;
+            galleryDiv.appendChild(img);
+          };
+          reader.readAsDataURL(file);
+        });
+      });
+
+      // === RUNNER GAME (simple) ===
+      const runnerCanvas = document.getElementById('runnerCanvas');
+      const rCtx = runnerCanvas.getContext('2d');
+      let runnerX = 50, runnerY = 100, obstacleX = 300, score = 0, gameInterval;
+      document.getElementById('startRunner').addEventListener('click', () => {
+        if(gameInterval) clearInterval(gameInterval);
+        runnerX = 50; obstacleX = 300; score = 0;
+        gameInterval = setInterval(() => {
+          rCtx.clearRect(0,0,300,150);
+          rCtx.fillStyle = '#ff69b4';
+          rCtx.fillRect(runnerX, runnerY-20, 30, 30);
+          rCtx.fillStyle = '#8b4513';
+          rCtx.fillRect(obstacleX, 110, 20, 20);
+          obstacleX -= 5;
+          if(obstacleX < -20) { obstacleX = 300; score+=10; document.getElementById('runnerScore').innerText = 'Distance: '+score+'m'; }
+          if(Math.abs(runnerX - obstacleX) < 25 && runnerY>90) {
+            alert('💖 You ran into love! +10 kisses!');
+            kisses+=10; kissDisplay.innerText = kisses + ' Kisses Given ❤️';
+            obstacleX = 300;
+          }
+        }, 50);
+        document.addEventListener('keydown', (e) => { if(e.code==='Space') runnerY=60; });
+        setInterval(() => runnerY=100, 200);
+      });
+
+      // === LOVE LETTER GENERATOR ===
+      document.getElementById('generateLetter').addEventListener('click', () => {
+        let input = document.getElementById('letterInput').value;
+        let romantic = ['My dearest Ankita, ' + input + ' You mean the world to me. Forever yours, Utsav 💌'];
+        document.getElementById('generatedLetter').innerText = romantic;
+      });
+
+      // === PLAYLIST ===
+      const playlistDiv = document.getElementById('playlist');
+      const songs = ['Perfect - Ed Sheeran', 'Tum Hi Ho - Arijit', 'Love Story - Taylor', 'Je t\'aime'];
+      playlistDiv.innerHTML = songs.map(s => `<div>🎵 ${s} <button class="hyper-btn">Play</button></div>`).join('');
+      playlistDiv.querySelectorAll('button').forEach(btn => btn.addEventListener('click', () => alert('🎶 Playing in our hearts!')));
+
+      // extra: stop moving button re-enable moving
+      stopBtn.addEventListener('click', () => clearInterval(moveInterval));
+    })();
+  </script>
 </body>
 </html>
