@@ -2,517 +2,538 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-  <title>For My Kanchi ifkyk 💕</title>
-  <style>
-    /* === RESET & GLOBAL === */
-    * { margin:0; padding:0; box-sizing:border-box; user-select:none; -webkit-tap-highlight-color:transparent; }
-    body {
-      min-height:100vh;
-      background: linear-gradient(-45deg, #ff758c, #ff7eb3, #ff9a9e, #fecfef, #ff69b4);
-      background-size: 600% 600%;
-      animation: gradient 10s ease infinite;
-      font-family: 'Segoe UI', system-ui, sans-serif;
-      overflow-x: hidden;
-      cursor: url('data:image/svg+xml;utf8,<svg xmlns=%27http://www.w3.org/2000/svg%27 width=%2720%27 height=%2720%27><text y=%2718%27 font-size=%2720%27>💖</text></svg>') 10 10, auto;
-    }
-    @keyframes gradient { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
-
-    /* === WELCOME SCREEN === */
-    #welcomeScreen {
-      position: fixed; inset:0; display: flex; flex-direction: column; align-items: center; justify-content: center;
-      background: rgba(255,255,255,0.3); backdrop-filter: blur(15px); z-index: 100;
-      transition: opacity 0.8s ease;
-    }
-    #welcomeScreen.hidden { opacity:0; pointer-events:none; }
-
-    /* === MAIN CONTAINER (glassmorphism) === */
-    .container {
-      max-width: 520px; margin: 20px auto; padding: 35px 25px;
-      background: rgba(255,255,255,0.25);
-      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-      border-radius: 50px;
-      border: 2px solid rgba(255,255,255,0.5);
-      box-shadow: 0 30px 60px rgba(255,105,180,0.3), inset 0 0 40px rgba(255,255,255,0.6);
-    }
-
-    /* === HYPER TEXT / BUTTONS === */
-    .hyper-text { animation: rainbowText 4s linear infinite; text-shadow: 0 0 20px #fff; }
-    @keyframes rainbowText { 0%{color:#ff4b2b} 20%{color:#ff9a9e} 40%{color:#fecfef} 60%{color:#ff69b4} 80%{color:#ff416c} 100%{color:#ff4b2b} }
-
-    .hyper-btn {
-      position: relative; overflow: hidden; transition: all 0.3s cubic-bezier(0.175,0.885,0.32,1.275);
-      box-shadow: 0 10px 30px rgba(255,65,108,0.5);
-      border: none; background: rgba(255,255,240,0.8); padding: 12px 25px; border-radius: 60px;
-      font-weight: bold; font-size: 1.1rem; margin: 8px; cursor: pointer;
-    }
-    .hyper-btn:active { transform: scale(1.3) rotate(10deg) !important; box-shadow: 0 0 60px #ff69b4; }
-
-    .love-note, .game-section {
-      background: rgba(255,255,255,0.35);
-      border-radius: 35px;
-      padding: 25px;
-      margin: 25px 0;
-      box-shadow: 0 15px 35px rgba(0,0,0,0.1);
-      border: 1px solid rgba(255,255,255,0.6);
-      text-align: center;
-    }
-
-    /* === LOVE METER === */
-    .love-meter {
-      background: linear-gradient(to right, #ff69b4, #ffd700);
-      color: white; padding: 10px 20px; border-radius: 50px;
-      text-align: center; font-weight: bold; box-shadow: 0 0 25px #ffd700;
-      margin: 20px 0;
-    }
-
-    /* === MAZE CONTROLS === */
-    .maze-controls { display: flex; gap: 5px; justify-content: center; margin: 15px 0; }
-    .arrow-btn { font-size: 2rem; padding: 5px 20px; }
-
-    /* === MOVING BUTTON GAME === */
-    .annoying-area { position: relative; min-height: 120px; }
-    #movingButton { position: absolute; left:20px; top:20px; transition: left 0.2s, top 0.2s; }
-
-    /* === MEMORY GRID === */
-    .memory-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; max-width: 300px; margin: 10px auto; }
-    .memory-card { aspect-ratio: 1/1; background: #ffb6c1; border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 2rem; box-shadow: 0 0 15px hotpink; cursor: pointer; transition: 0.2s; border: 2px solid white; }
-    .memory-card.flipped { background: #fff0f5; transform: scale(0.95); }
-
-    /* === GALLERY GRID === */
-    .gallery-grid { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 15px; }
-    .gallery-grid img { width: 80px; height: 80px; object-fit: cover; border-radius: 20px; border: 3px solid white; }
-
-    /* === RUNNER CANVAS === */
-    #runnerCanvas { background: #ffd1dc; border-radius: 30px; margin: 10px auto; display: block; border: 3px solid white; }
-
-    /* === HEARTS CONFETTI === */
-    .heart {
-      position: fixed; pointer-events: none; z-index: 9999;
-      animation: hyperFloat 3.5s linear forwards;
-      font-size: 30px;
-    }
-    @keyframes hyperFloat {
-      0% { transform: translateY(0) rotate(0deg); opacity:1; }
-      100% { transform: translateY(-120vh) rotate(360deg); opacity:0; }
-    }
-
-    /* === HIDDEN MESSAGE === */
-    .hidden-message { margin: 10px; font-weight: bold; color: crimson; }
-
-    /* === FOOTER === */
-    footer { text-align: center; margin-top: 30px; font-size: 1.3rem; }
-  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>For My Kanchi 💕</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Dancing+Script:wght@400;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <audio id="bgMusic" loop>
-    <source src="music.mp3" type="audio/mpeg">
-  </audio>
 
-  <!-- Welcome Screen -->
-  <div id="welcomeScreen">
-    <h2 class="hyper-text">A special surprise for Ankita 💌</h2>
-    <button class="open-btn hyper-btn" id="startBtn">Tap to Open My Heart 💕</button>
+<!-- Floating particles background -->
+<div id="particles"></div>
+
+<!-- Cursor trail -->
+<canvas id="trailCanvas"></canvas>
+
+<!-- ===================== WELCOME SCREEN ===================== -->
+<div id="welcomeScreen">
+  <div class="welcome-inner">
+    <div class="welcome-petals" id="welcomePetals"></div>
+    <div class="welcome-icon">💌</div>
+    <h1 class="welcome-title">A Secret World</h1>
+    <p class="welcome-sub">made just for you, Ankita</p>
+    <div class="welcome-hearts">
+      <span>💖</span><span>💗</span><span>💕</span><span>💘</span><span>💝</span>
+    </div>
+    <button id="startBtn" class="glass-btn primary pulse-btn">
+      <span>Open My Heart</span>
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.593c-5.63-5.539-11-10.297-11-14.402 0-3.791 3.068-5.191 5.281-5.191 1.312 0 4.151.501 5.719 4.457 1.59-3.968 4.464-4.447 5.726-4.447 2.54 0 5.274 1.621 5.274 5.181 0 4.069-5.136 8.625-11 14.402z"/></svg>
+    </button>
+    <p class="welcome-hint">🔊 Best with headphones on</p>
   </div>
+</div>
 
-  <div class="hearts" id="heartsContainer"></div>
+<!-- ===================== MAIN APP ===================== -->
+<div id="mainApp" class="hidden">
 
-  <!-- Main Content (initially hidden) -->
-  <div class="container" id="mainContent" style="display: none;">
-    <div class="header">
-      <h1 class="hyper-text">💞 For My Kanchi♾️💞</h1>
-      <div id="loveMeter" class="love-meter">Our Love: <span id="lovePercent">100</span>% ❤️</div>
+  <!-- Sticky Header -->
+  <header id="siteHeader">
+    <div class="header-inner">
+      <div class="header-logo">
+        <span class="logo-heart">💞</span>
+        <span class="logo-text">Utsav <span class="heart-sep">♾️</span> Ankita</span>
+      </div>
+      <div class="header-right">
+        <div class="love-meter-mini">
+          <span class="meter-label">Love</span>
+          <div class="meter-bar"><div id="miniMeter" class="meter-fill"></div></div>
+          <span id="miniPercent">∞%</span>
+        </div>
+        <button id="musicToggle" class="icon-btn" title="Toggle Music">🎵</button>
+        <button id="themeToggle" class="icon-btn" title="Toggle Theme">🌙</button>
+      </div>
     </div>
+  </header>
 
-    <div class="love-note hyper-note">
-   🌸 अंकिता, तिमी मेरो संसार हौ। <br>
-
-तिम्रो साथमा म सधैं खुसी छु।<br>
-
-तिम्रो मुस्कानले मेरो दिन उज्यालो बनाउँछ।<br>
-
-म तिमीलाई माया गर्नेछु — आज, भोलि, र सधैं! 💖
-
-
+  <!-- ========== HERO SECTION ========== -->
+  <section class="hero-section">
+    <div class="hero-content">
+      <div class="hero-badge">✨ For You, Always ✨</div>
+      <h1 class="hero-title">
+        <span class="line1">मेरी जान,</span>
+        <span class="line2">Ankita</span>
+      </h1>
+      <p class="hero-poem">
+        तिम्रो मुस्कान मेरो संसारको सबैभन्दा सुन्दर दृश्य हो।<br>
+        तिम्रो आवाज मेरो मनको सबैभन्दा मधुर संगीत हो।<br>
+        तिम्रो माया मेरो जीवनको सबैभन्दा ठूलो उपहार हो।<br>
+        <em>— सधैं तिम्रो, Utsav 💖</em>
+      </p>
+      <div class="hero-stats">
+        <div class="stat-card glass-card">
+          <div class="stat-icon">💋</div>
+          <div class="stat-num" id="totalKisses">0</div>
+          <div class="stat-label">Kisses Sent</div>
+        </div>
+        <div class="stat-card glass-card">
+          <div class="stat-icon">❤️</div>
+          <div class="stat-num" id="totalHearts">0</div>
+          <div class="stat-label">Hearts Given</div>
+        </div>
+        <div class="stat-card glass-card">
+          <div class="stat-icon">🌹</div>
+          <div class="stat-num" id="daysCount">0</div>
+          <div class="stat-label">Days of Love</div>
+        </div>
+        <div class="stat-card glass-card">
+          <div class="stat-icon">✨</div>
+          <div class="stat-num" id="lovePoints">0</div>
+          <div class="stat-label">Love Points</div>
+        </div>
+      </div>
     </div>
+    <div class="hero-visual">
+      <div class="rotating-heart-outer">
+        <div class="rotating-heart-inner">
+          <div class="big-heart-display">💖</div>
+          <div class="orbit-dot d1">💕</div>
+          <div class="orbit-dot d2">🌸</div>
+          <div class="orbit-dot d3">✨</div>
+          <div class="orbit-dot d4">💫</div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-    <!-- Maze -->
-    <div class="game-section">
-      <div class="maze-title hyper-text">🧩 Maze of Love 🧩</div>
-      <canvas id="mazeCanvas" width="300" height="300"></canvas>
+
+  <!-- ========== LIVE LOVE TIMER ========== -->
+  <section class="section" id="timerSection">
+    <div class="section-header">
+      <span class="section-icon">⏱️</span>
+      <h2>We've Been Us Since...</h2>
+      <p class="section-sub">Every second counts — and every one has been precious 💕</p>
+    </div>
+    <div class="glass-card timer-card">
+      <div class="timer-start-date">💬 December 10, 2024 — The day everything began</div>
+      <div class="timer-grid">
+        <div class="timer-unit"><div class="timer-num" id="tDays">0</div><div class="timer-label">Days</div></div>
+        <div class="timer-sep">:</div>
+        <div class="timer-unit"><div class="timer-num" id="tHours">00</div><div class="timer-label">Hours</div></div>
+        <div class="timer-sep">:</div>
+        <div class="timer-unit"><div class="timer-num" id="tMins">00</div><div class="timer-label">Minutes</div></div>
+        <div class="timer-sep">:</div>
+        <div class="timer-unit highlight"><div class="timer-num" id="tSecs">00</div><div class="timer-label">Seconds</div></div>
+      </div>
+      <div class="timer-total">Total seconds of love: <span id="tTotalSecs" class="timer-total-num">0</span> 💖</div>
+      <div class="timer-message" id="timerMessage"></div>
+    </div>
+  </section>
+
+  <!-- ========== LOVE LETTER ========== -->
+  <section class="section" id="letterSection">
+    <div class="section-header">
+      <span class="section-icon">💌</span>
+      <h2>A Letter From My Heart</h2>
+    </div>
+    <div class="glass-card letter-card">
+      <div class="letter-lines">
+        <p>मेरी प्यारी Ankita,</p>
+        <p>हर रोज़ जब मैं तुम्हारे बारे में सोचता हूँ, मेरे दिल में एक अजीब सी खुशी भर जाती है। तुम सिर्फ मेरी girlfriend नहीं हो — तुम मेरी सबसे अच्छी दोस्त हो, मेरी हमसफर हो।</p>
+        <p>तुम्हारी हँसी सुनकर मेरा दिन बन जाता है। तुम्हारी आँखों में जो चमक है, वो मुझे रात के सबसे चमकीले तारे से भी ज़्यादा प्यारी लगती है।</p>
+        <p>जब तुम "Kanchi" बोलती हो, तो मुझे लगता है दुनिया में सब कुछ सही है। जब तुम उदास होती हो, तो मैं बस यही चाहता हूँ कि सारी तकलीफें मैं उठा लूँ।</p>
+        <p>मेरा वादा है — आज, कल, और सदा तुम्हारे साथ हूँ। हर मुस्कान में, हर आँसू में, हर पल में।</p>
+        <p>तुम्हारा हमेशा,<br><em class="signature">Utsav 💕</em></p>
+      </div>
+      <div class="letter-seal">💝</div>
+    </div>
+  </section>
+
+  <!-- ========== MAZE GAME ========== -->
+  <section class="section" id="mazeSection">
+    <div class="section-header">
+      <span class="section-icon">🧩</span>
+      <h2>Maze of Love</h2>
+      <p class="section-sub">Find your way to the heart ❤️</p>
+    </div>
+    <div class="glass-card game-card">
+      <div class="maze-wrapper">
+        <canvas id="mazeCanvas" width="320" height="320"></canvas>
+        <div id="mazeOverlay" class="maze-overlay hidden">
+          <div class="overlay-content">
+            <div class="overlay-emoji">💖</div>
+            <div class="overlay-text">You Found My Heart!</div>
+            <button class="glass-btn small" id="mazeReplayBtn">Play Again 💕</button>
+          </div>
+        </div>
+      </div>
       <div class="maze-controls">
-        <button class="arrow-btn hyper-btn" id="moveUp">⬆️</button>
-        <button class="arrow-btn hyper-btn" id="moveLeft">⬅️</button>
-        <button class="arrow-btn hyper-btn" id="moveDown">⬇️</button>
-        <button class="arrow-btn hyper-btn" id="moveRight">➡️</button>
+        <div class="dpad">
+          <button class="dpad-btn top" id="mUp">⬆</button>
+          <button class="dpad-btn left" id="mLeft">⬅</button>
+          <button class="dpad-btn center">💗</button>
+          <button class="dpad-btn right" id="mRight">➡</button>
+          <button class="dpad-btn bottom" id="mDown">⬇</button>
+        </div>
       </div>
-      <button class="maze-reset hyper-btn" id="resetMaze">⟲ Reset Maze</button>
-    </div>
-
-    <!-- Catch Me -->
-    <div class="game-section annoying-area">
-      <div class="moving-btn hyper-btn" id="movingButton">💢 Catch me!</div>
-      <div class="btn-group">
-        <button class="stationary-btn hyper-btn" id="easyButton">💋 Click me instead</button>
-        <button class="stop-moving hyper-btn" id="stopMovingBtn">🛑 Stop moving!</button>
+      <div class="maze-info">
+        <span id="mazeMoves">Moves: 0</span>
+        <span id="mazeTime">Time: 0s</span>
+        <button class="glass-btn small" id="resetMazeBtn">Reset ↺</button>
       </div>
     </div>
-    <div class="hidden-message" id="annoyingMessage"></div>
+  </section>
 
-    <!-- Memory Match -->
-    <div class="game-section">
-      <div class="maze-title hyper-text">💑 Memory Match of Our Love 💑</div>
+  <!-- ========== MEMORY GAME ========== -->
+  <section class="section" id="memorySection">
+    <div class="section-header">
+      <span class="section-icon">💑</span>
+      <h2>Memory of Us</h2>
+      <p class="section-sub">Match the pairs — just like we match perfectly 💞</p>
+    </div>
+    <div class="glass-card game-card">
+      <div class="memory-stats">
+        <span>Pairs: <b id="memPairs">0</b>/8</span>
+        <span>Moves: <b id="memMoves">0</b></span>
+        <span>Time: <b id="memTime">0s</b></span>
+      </div>
       <div id="memoryGrid" class="memory-grid"></div>
-      <button class="maze-reset hyper-btn" id="resetMemory">New Game ❤️</button>
+      <button class="glass-btn small" id="resetMemoryBtn">New Game 🔄</button>
     </div>
+  </section>
 
-    <!-- Love Quiz -->
-    <div class="game-section">
-      <div class="maze-title hyper-text">❤️ Love Quiz</div>
-      <div id="quizContainer"></div>
+  <!-- ========== CATCH ME GAME ========== -->
+  <section class="section">
+    <div class="section-header">
+      <span class="section-icon">🏃</span>
+      <h2>Catch My Kiss!</h2>
+      <p class="section-sub">Can you catch it? 😘</p>
     </div>
-
-    <!-- Daily Fortune -->
-    <div class="game-section">
-      <div class="maze-title hyper-text">🌟 Daily Love Fortune</div>
-      <button class="maze-reset hyper-btn" id="fortuneBtn">Tell me something sweet 💌</button>
-      <div id="fortuneResult" class="love-note"></div>
+    <div class="glass-card game-card" id="catchArea">
+      <div id="catchStats">Caught: <b id="caughtCount">0</b> | Missed: <b id="missedCount">0</b> | Score: <b id="catchScore">0</b></div>
+      <div id="catchZone"></div>
+      <div class="catch-controls">
+        <button class="glass-btn small" id="startCatch">Start Game 💋</button>
+        <button class="glass-btn small" id="stopCatch">Stop 🛑</button>
+      </div>
+      <div id="catchMsg" class="game-msg"></div>
     </div>
+  </section>
 
-    <!-- Kiss Counter -->
-    <div class="game-section">
-      <div class="maze-title hyper-text">💋 Virtual Kiss Counter</div>
-      <div id="kissDisplay" class="hyper-text">0 Kisses Given ❤️</div>
-      <button id="kissBtn" class="big-btn hyper-btn">Kiss me Right Now 😘</button>
-      <div id="streak" class="hyper-text">Streak: 0 🔥</div>
+  <!-- ========== SNAKE GAME ========== -->
+  <section class="section">
+    <div class="section-header">
+      <span class="section-icon">🐍</span>
+      <h2>Love Snake</h2>
+      <p class="section-sub">Eat the hearts to grow your love 💕</p>
     </div>
-
-    <!-- Love Clicker -->
-    <div class="game-section">
-      <div class="maze-title hyper-text">❤️ Love Clicker</div>
-      <button id="heartClicker" class="hyper-btn">💖</button>
-      <div id="points" class="hyper-text">Love Points: 0</div>
-      <button id="upgradeBtn" class="maze-reset hyper-btn">Buy Auto-Kisses (50 pts)</button>
+    <div class="glass-card game-card">
+      <div class="snake-info">
+        <span>Score: <b id="snakeScore">0</b></span>
+        <span>High: <b id="snakeHigh">0</b></span>
+        <span>Level: <b id="snakeLevel">1</b></span>
+      </div>
+      <canvas id="snakeCanvas" width="320" height="320"></canvas>
+      <div class="snake-controls">
+        <div class="dpad">
+          <button class="dpad-btn top" id="sUp">⬆</button>
+          <button class="dpad-btn left" id="sLeft">⬅</button>
+          <button class="dpad-btn center">💚</button>
+          <button class="dpad-btn right" id="sRight">➡</button>
+          <button class="dpad-btn bottom" id="sDown">⬇</button>
+        </div>
+      </div>
+      <button class="glass-btn small" id="startSnake">Start Snake 🐍</button>
     </div>
+  </section>
 
-    <!-- Memory Gallery -->
-    <div class="game-section">
-      <div class="maze-title hyper-text">📸 Our Beautiful Memories</div>
-      <input type="file" id="uploadPhoto" multiple accept="image/*">
-      <div id="gallery" class="gallery-grid"></div>
+  <!-- ========== QUIZ ========== -->
+  <section class="section">
+    <div class="section-header">
+      <span class="section-icon">❓</span>
+      <h2>How Well Do You Know Us?</h2>
     </div>
-
-    <!-- Runner Game -->
-    <div class="game-section">
-      <div class="maze-title hyper-text">🏃‍♀️ Run to Forever</div>
-      <canvas id="runnerCanvas" width="300" height="150"></canvas>
-      <button id="startRunner" class="maze-reset hyper-btn">Start Running to Her ❤️</button>
-      <div id="runnerScore" class="hyper-text">Distance: 0m</div>
+    <div class="glass-card game-card" id="quizCard">
+      <div id="quizProgress" class="quiz-progress"><div id="quizBar" class="quiz-bar"></div></div>
+      <div id="quizQuestion" class="quiz-question"></div>
+      <div id="quizOptions" class="quiz-options"></div>
+      <div id="quizFeedback" class="quiz-feedback hidden"></div>
+      <div id="quizResult" class="quiz-result hidden"></div>
     </div>
+  </section>
 
-    <!-- Love Letter Generator -->
-    <div class="game-section">
-      <div class="maze-title hyper-text">✉️ Love Letter Generator</div>
-      <textarea id="letterInput" placeholder="Type something sweet..."></textarea>
-      <button id="generateLetter" class="maze-reset hyper-btn">Make it Romantic 💌</button>
-      <div id="generatedLetter" class="love-note"></div>
+  <!-- ========== FORTUNE TELLER ========== -->
+  <section class="section">
+    <div class="section-header">
+      <span class="section-icon">🔮</span>
+      <h2>Love Fortune Teller</h2>
     </div>
+    <div class="glass-card fortune-card">
+      <div class="crystal-ball" id="crystalBall">
+        <div class="crystal-inner">
+          <div class="crystal-glow"></div>
+          <span class="crystal-icon">🔮</span>
+        </div>
+      </div>
+      <p class="fortune-hint">Tap the crystal ball for your fortune...</p>
+      <div id="fortuneText" class="fortune-text hidden"></div>
+    </div>
+  </section>
 
-        <footer class="hyper-text">with infinite love, your Utsav 💖</footer>
+  <!-- ========== KISS COUNTER ========== -->
+  <section class="section">
+    <div class="section-header">
+      <span class="section-icon">💋</span>
+      <h2>Virtual Kiss Counter</h2>
+    </div>
+    <div class="glass-card kiss-card">
+      <div class="kiss-display">
+        <div id="kissAnim" class="kiss-anim">💋</div>
+        <div id="kissNumber" class="kiss-number">0</div>
+        <div class="kiss-label">kisses given</div>
+      </div>
+      <div class="streak-display">
+        🔥 Streak: <span id="kissStreak">0</span>
+      </div>
+      <button id="kissBtn" class="glass-btn primary kiss-btn">Send a Kiss 💋</button>
+      <button id="superKissBtn" class="glass-btn super-kiss">💋 SUPER KISS 💋 (×10)</button>
+    </div>
+  </section>
+
+  <!-- ========== LOVE CLICKER ========== -->
+  <section class="section">
+    <div class="section-header">
+      <span class="section-icon">❤️</span>
+      <h2>Love Clicker</h2>
+      <p class="section-sub">Click to earn love points!</p>
+    </div>
+    <div class="glass-card clicker-card">
+      <div id="clickerHeart" class="clicker-heart">💖</div>
+      <div class="clicker-pts">Love Points: <span id="clickerPoints">0</span></div>
+      <div class="clicker-rate">+<span id="clickerRate">0</span>/sec auto</div>
+      <div class="upgrades-grid">
+        <button class="upgrade-btn glass-btn small" data-cost="50" data-rate="1" id="upg1">
+          💌 Auto Kisses<br><small>50 pts — +1/sec</small>
+        </button>
+        <button class="upgrade-btn glass-btn small" data-cost="200" data-rate="5" id="upg2">
+          🌹 Rose Garden<br><small>200 pts — +5/sec</small>
+        </button>
+        <button class="upgrade-btn glass-btn small" data-cost="1000" data-rate="20" id="upg3">
+          💍 Ring of Love<br><small>1000 pts — +20/sec</small>
+        </button>
+        <button class="upgrade-btn glass-btn small" data-cost="5000" data-rate="100" id="upg4">
+          🌟 Star Named Ankita<br><small>5000 pts — +100/sec</small>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== LOVE LETTER GENERATOR ========== -->
+  <section class="section">
+    <div class="section-header">
+      <span class="section-icon">✍️</span>
+      <h2>AI Love Letter Generator</h2>
+    </div>
+    <div class="glass-card">
+      <div class="letter-gen-options">
+        <label>Mood:</label>
+        <div class="mood-btns">
+          <button class="mood-btn active" data-mood="romantic">🌹 Romantic</button>
+          <button class="mood-btn" data-mood="playful">😜 Playful</button>
+          <button class="mood-btn" data-mood="deep">💭 Deep</button>
+          <button class="mood-btn" data-mood="nepali">🇳🇵 Nepali</button>
+          <button class="mood-btn" data-mood="hindi">🇮🇳 Hindi</button>
+        </div>
+      </div>
+      <textarea id="letterSeed" placeholder="Type a word or feeling to inspire the letter... (or leave blank)" rows="2"></textarea>
+      <button class="glass-btn primary" id="genLetterBtn">Generate My Love Letter 💌</button>
+      <div id="generatedLetterOutput" class="generated-letter hidden"></div>
+      <button class="glass-btn small hidden" id="copyLetterBtn">📋 Copy Letter</button>
+    </div>
+  </section>
+
+  <!-- ========== PHOTO GALLERY ========== -->
+  <section class="section">
+    <div class="section-header">
+      <span class="section-icon">📸</span>
+      <h2>Our Memory Gallery</h2>
+    </div>
+    <div class="glass-card gallery-card">
+      <div class="gallery-upload">
+        <label for="photoUpload" class="glass-btn small upload-label">📎 Add Our Photos</label>
+        <input type="file" id="photoUpload" multiple accept="image/*" style="display:none">
+        <p class="gallery-hint">Upload your favorite memories together 💕</p>
+      </div>
+      <div id="photoGallery" class="photo-gallery">
+        <div class="gallery-placeholder">
+          <div class="placeholder-icon">🖼️</div>
+          <p>Your beautiful memories will appear here</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== LOVE TIMELINE ========== -->
+  <section class="section">
+    <div class="section-header">
+      <span class="section-icon">📅</span>
+      <h2>Our Love Story Timeline</h2>
+    </div>
+    <div class="glass-card">
+      <div class="timeline">
+        <div class="timeline-item left">
+          <div class="timeline-dot">💬</div>
+          <div class="timeline-content glass-card">
+            <div class="timeline-date">The Beginning</div>
+            <div class="timeline-title">First Hello</div>
+            <p>The moment everything changed — when I first saw you at Iskcon, I knew there was something special about you.</p>
+          </div>
+        </div>
+        <div class="timeline-item right">
+          <div class="timeline-dot">💕</div>
+          <div class="timeline-content glass-card">
+            <div class="timeline-date">Getting Closer</div>
+            <div class="timeline-title">Becoming Inseparable</div>
+            <p>Every conversation made me fall harder. Every laugh made me want to hear it forever.</p>
+          </div>
+        </div>
+        <div class="timeline-item left">
+          <div class="timeline-dot">❤️</div>
+          <div class="timeline-content glass-card">
+            <div class="timeline-date">The Confession</div>
+            <div class="timeline-title">I Love You</div>
+            <p>The three words that changed everything. And you said yes. Best day of my life.</p>
+          </div>
+        </div>
+        <div class="timeline-item right">
+          <div class="timeline-dot">🌟</div>
+          <div class="timeline-content glass-card">
+            <div class="timeline-date">Now & Forever</div>
+            <div class="timeline-title">Us</div>
+            <p>Every day with you is a new chapter of the most beautiful story I've ever lived.</p>
+          </div>
+        </div>
+        <div class="timeline-item left future">
+          <div class="timeline-dot">💍</div>
+          <div class="timeline-content glass-card">
+            <div class="timeline-date">Coming Soon...</div>
+            <div class="timeline-title">Forever & Always 🤫</div>
+            <p>The best chapters of our story are still being written... ✍️💕</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== REASONS I LOVE YOU ========== -->
+  <section class="section">
+    <div class="section-header">
+      <span class="section-icon">🌸</span>
+      <h2>100 Reasons I Love You</h2>
+      <p class="section-sub">Tap each petal to reveal a reason 🌸</p>
+    </div>
+    <div class="glass-card reasons-card">
+      <div id="reasonsGrid" class="reasons-grid"></div>
+      <div id="reasonModal" class="reason-modal hidden">
+        <div class="reason-modal-inner glass-card">
+          <div class="reason-num" id="reasonNum"></div>
+          <div class="reason-text" id="reasonText"></div>
+          <button class="glass-btn small" id="closeReason">Close 💕</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== PROMISE WALL ========== -->
+  <section class="section">
+    <div class="section-header">
+      <span class="section-icon">🤝</span>
+      <h2>My Promises to You</h2>
+    </div>
+    <div class="promises-grid">
+      <div class="promise-card glass-card" data-delay="0">
+        <div class="promise-icon">🛡️</div>
+        <h3>I will always protect you</h3>
+        <p>From every storm, every tear, every hurt — I will stand by you.</p>
+      </div>
+      <div class="promise-card glass-card" data-delay="100">
+        <div class="promise-icon">👂</div>
+        <h3>I will always listen</h3>
+        <p>Your thoughts, your dreams, your fears — I am here for all of it.</p>
+      </div>
+      <div class="promise-card glass-card" data-delay="200">
+        <div class="promise-icon">😂</div>
+        <h3>I will make you laugh</h3>
+        <p>Even on the worst days, I'll find a way to bring back your smile.</p>
+      </div>
+      <div class="promise-card glass-card" data-delay="300">
+        <div class="promise-icon">🌱</div>
+        <h3>I will help you grow</h3>
+        <p>Your dreams are my dreams. Your success is my happiness.</p>
+      </div>
+      <div class="promise-card glass-card" data-delay="400">
+        <div class="promise-icon">🤗</div>
+        <h3>I will hug you tight</h3>
+        <p>Every time you need it, even when you don't ask for it.</p>
+      </div>
+      <div class="promise-card glass-card" data-delay="500">
+        <div class="promise-icon">💞</div>
+        <h3>I will love you endlessly</h3>
+        <p>Today, tomorrow, and in every life after this one.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== MUSIC PLAYER ========== -->
+  <section class="section">
+    <div class="section-header">
+      <span class="section-icon">🎵</span>
+      <h2>Our Playlist</h2>
+    </div>
+    <div class="glass-card music-card">
+      <div class="now-playing">
+        <div class="vinyl" id="vinyl">
+          <div class="vinyl-inner">🎵</div>
+        </div>
+        <div class="track-info">
+          <div id="trackName" class="track-name">Select a song...</div>
+          <div id="trackArtist" class="track-artist"></div>
+          <div class="track-bar"><div id="trackProgress" class="track-progress"></div></div>
+        </div>
+      </div>
+      <div class="playlist-items" id="playlistItems"></div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="footer-hearts" id="footerHearts"></div>
+    <div class="footer-text">
+      <p class="footer-main">Made with every bit of love I have 💖</p>
+      <p class="footer-sub">From Utsav, to Ankita — forever and always</p>
+      <p class="footer-nepali">तिमीलाई माया गर्छु, Kanchi ♾️</p>
+    </div>
+    <div class="footer-icons">💖 💕 💗 💘 💝 💞 💓 💟</div>
+  </footer>
+
+</div><!-- end mainApp -->
+
+<!-- Floating heart spawner on click -->
+<div id="floatHearts"></div>
+
+<!-- Notification Toast -->
+<div id="toastContainer"></div>
+
+<!-- Full screen win modal -->
+<div id="winModal" class="win-modal hidden">
+  <div class="win-inner glass-card">
+    <div class="win-emoji" id="winEmoji">🎉</div>
+    <div class="win-title" id="winTitle">You Won!</div>
+    <div class="win-sub" id="winSub"></div>
+    <button class="glass-btn primary" id="winClose">Yay! 💕</button>
   </div>
+</div>
 
-  <script>
-    (function() {
-      // === WELCOME SCREEN TRANSITION ===
-      const welcome = document.getElementById('welcomeScreen');
-      const main = document.getElementById('mainContent');
-      const startBtn = document.getElementById('startBtn');
-      const bgMusic = document.getElementById('bgMusic');
-
-      startBtn.addEventListener('click', () => {
-        welcome.classList.add('hidden');
-        main.style.display = 'block';
-        bgMusic.play().catch(() => {}); // autoplay may be blocked, but try
-        createHyperBurst(30); // celebration
-      });
-
-      // === LOVE METER (increase with every click) ===
-      let loveLevel = 100;
-      const loveSpan = document.getElementById('lovePercent');
-      function increaseLove() {
-        loveLevel = Math.min(100, loveLevel + 2);
-        loveSpan.textContent = loveLevel;
-      }
-      document.addEventListener('click', (e) => {
-        if (e.target.tagName === 'BUTTON' || e.target.closest('button')) increaseLove();
-      });
-
-      // === HYPER BURST (confetti + hearts) ===
-      function createHyperBurst(count = 40) {
-        for(let i=0; i<count; i++) {
-          const h = document.createElement('div');
-          h.className = 'heart';
-          h.textContent = ['❤️','💖','💗','🌹','💕','✨','💘','💝'][Math.floor(Math.random()*8)];
-          h.style.left = Math.random()*100 + 'vw';
-          h.style.top = (Math.random()*30 + 70) + 'vh'; // start near bottom
-          h.style.fontSize = (Math.random()*40 + 20) + 'px';
-          h.style.animationDuration = (Math.random()*2 + 2.5) + 's';
-          document.body.appendChild(h);
-          setTimeout(() => h.remove(), 4500);
-        }
-      }
-      document.addEventListener('click', (e) => {
-        if (e.target.tagName === 'BUTTON' || e.target.tagName === 'CANVAS') createHyperBurst(20);
-      });
-
-      // === MAZE GAME (simple) ===
-      const canvas = document.getElementById('mazeCanvas');
-      const ctx = canvas.getContext('2d');
-      let mazeGrid = [
-        [1,1,1,1,1],
-        [1,0,1,0,1],
-        [1,0,0,0,1],
-        [1,1,1,0,1],
-        [1,1,1,2,1]
-      ];
-      let playerPos = { x:1, y:1 };
-      const cellSize = 60;
-
-      function drawMaze() {
-        ctx.clearRect(0,0,300,300);
-        for(let r=0; r<5; r++) {
-          for(let c=0; c<5; c++) {
-            if(mazeGrid[r][c] === 1) { // wall
-              ctx.fillStyle = '#c06c84';
-              ctx.fillRect(c*cellSize, r*cellSize, cellSize-2, cellSize-2);
-            } else if(mazeGrid[r][c] === 2) { // goal
-              ctx.fillStyle = '#ffd700';
-              ctx.fillRect(c*cellSize, r*cellSize, cellSize-2, cellSize-2);
-              ctx.fillStyle = 'red';
-              ctx.font = '30px sans-serif';
-              ctx.fillText('💖', c*cellSize+15, r*cellSize+45);
-            } else {
-              ctx.fillStyle = '#fae3e3';
-              ctx.fillRect(c*cellSize, r*cellSize, cellSize-2, cellSize-2);
-            }
-          }
-        }
-        // draw player
-        ctx.fillStyle = '#ff69b4';
-        ctx.beginPath();
-        ctx.arc(playerPos.x*cellSize+30, playerPos.y*cellSize+30, 20, 0, 2*Math.PI);
-        ctx.fill();
-      }
-
-      function movePlayer(dx, dy) {
-        let newX = playerPos.x + dx;
-        let newY = playerPos.y + dy;
-        if(newX>=0 && newX<5 && newY>=0 && newY<5 && mazeGrid[newY][newX] !== 1) {
-          playerPos.x = newX;
-          playerPos.y = newY;
-          drawMaze();
-          if(mazeGrid[newY][newX] === 2) {
-            alert('✨ You reached the heart! I love you Ankita! ✨');
-            createHyperBurst(60);
-          }
-        }
-      }
-
-      document.getElementById('moveUp').addEventListener('click', () => movePlayer(0,-1));
-      document.getElementById('moveDown').addEventListener('click', () => movePlayer(0,1));
-      document.getElementById('moveLeft').addEventListener('click', () => movePlayer(-1,0));
-      document.getElementById('moveRight').addEventListener('click', () => movePlayer(1,0));
-      document.getElementById('resetMaze').addEventListener('click', () => {
-        playerPos = { x:1, y:1 };
-        drawMaze();
-      });
-      drawMaze();
-
-      // === MOVING BUTTON GAME ===
-      const movingBtn = document.getElementById('movingButton');
-      const easyBtn = document.getElementById('easyButton');
-      const stopBtn = document.getElementById('stopMovingBtn');
-      const annoyingMsg = document.getElementById('annoyingMessage');
-      let moveInterval;
-      function startMoving() {
-        if(moveInterval) clearInterval(moveInterval);
-        moveInterval = setInterval(() => {
-          if (!movingBtn) return;
-          let area = document.querySelector('.annoying-area');
-          let maxX = area.clientWidth - movingBtn.offsetWidth - 20;
-          let maxY = area.clientHeight - movingBtn.offsetHeight - 20;
-          if(maxX<10) maxX=100; if(maxY<10) maxY=50;
-          movingBtn.style.left = Math.random() * maxX + 'px';
-          movingBtn.style.top = Math.random() * maxY + 'px';
-        }, 400);
-      }
-      startMoving();
-      movingBtn.addEventListener('mouseenter', () => {
-        annoyingMsg.innerText = '😜 Almost!';
-      });
-      movingBtn.addEventListener('click', () => {
-        annoyingMsg.innerText = '💥 You caught me! Have a kiss! 💋';
-        createHyperBurst(30);
-      });
-      easyBtn.addEventListener('click', () => {
-        annoyingMsg.innerText = '💕 You clicked the easy button! Love you!';
-        createHyperBurst(20);
-      });
-      stopBtn.addEventListener('click', () => {
-        clearInterval(moveInterval);
-        movingBtn.style.left = '50%';
-        movingBtn.style.top = '50%';
-        annoyingMsg.innerText = '🛑 Moving stopped. Now catch me!';
-      });
-
-      // === MEMORY MATCH (simplified) ===
-      const memoryGrid = document.getElementById('memoryGrid');
-      const resetMemory = document.getElementById('resetMemory');
-      let memoryCards = ['💕','💖','💗','💘','💕','💖','💗','💘'];
-      let flipped = [];
-      let matched = [];
-      function shuffle(arr) { return arr.sort(()=>Math.random()-0.5); }
-      function renderMemory() {
-        let shuffled = shuffle([...memoryCards]);
-        memoryGrid.innerHTML = '';
-        shuffled.forEach((sym, idx) => {
-          let card = document.createElement('div');
-          card.className = 'memory-card';
-          card.dataset.index = idx;
-          card.dataset.symbol = sym;
-          card.textContent = flipped.includes(idx) || matched.includes(idx) ? sym : '❓';
-          if(matched.includes(idx)) card.style.background = '#c0f0c0';
-          card.addEventListener('click', (e) => {
-            let i = e.currentTarget.dataset.index;
-            if(flipped.length===2 || matched.includes(+i) || flipped.includes(+i)) return;
-            flipped.push(+i);
-            renderMemory();
-            if(flipped.length===2) {
-              let card1 = shuffled[flipped[0]];
-              let card2 = shuffled[flipped[1]];
-              if(card1 === card2) {
-                matched.push(...flipped);
-                createHyperBurst(10);
-              }
-              setTimeout(() => { flipped = []; renderMemory(); }, 600);
-            }
-          });
-          memoryGrid.appendChild(card);
-        });
-      }
-      resetMemory.addEventListener('click', () => { flipped = []; matched = []; renderMemory(); });
-      renderMemory();
-
-      // === LOVE QUIZ (dummy) ===
-      const quizDiv = document.getElementById('quizContainer');
-      let questions = [
-        { q: 'What is my favorite nickname for you?', a: ['Baby', 'Honey', 'Kanchi', 'Anku'], correct: 2 },
-        { q: 'Where did we first meet?', a: ['Online', 'Park', 'College', 'Iskcon'], correct: 3 }
-      ];
-      let qIndex = 0;
-      function loadQuiz() {
-        let q = questions[qIndex % questions.length];
-        quizDiv.innerHTML = `<p>${q.q}</p>` + q.a.map((opt, i) => `<button class="hyper-btn quiz-opt">${opt}</button>`).join('');
-        document.querySelectorAll('.quiz-opt').forEach((btn, idx) => {
-          btn.addEventListener('click', () => {
-            if(idx === q.correct) { alert('Correct! 💞'); createHyperBurst(20); }
-            else alert('Try again 😘');
-            qIndex++;
-            loadQuiz();
-          });
-        });
-      }
-      loadQuiz();
-
-      // === FORTUNE ===
-      const fortuneBtn = document.getElementById('fortuneBtn');
-      const fortuneRes = document.getElementById('fortuneResult');
-      const fortunes = ['I will wanna give you a  tight hug today', 'Utsav loves you more than stars', 'A sweet surprise awaits', 'Our love grows stronger every second'];
-      fortuneBtn.addEventListener('click', () => {
-        fortuneRes.innerText = fortunes[Math.floor(Math.random()*fortunes.length)] + ' 💫';
-        createHyperBurst(15);
-      });
-
-      // === KISS COUNTER ===
-      let kisses = 0, streak = 0;
-      const kissDisplay = document.getElementById('kissDisplay');
-      const streakSpan = document.getElementById('streak');
-      document.getElementById('kissBtn').addEventListener('click', () => {
-        kisses++; streak++;
-        kissDisplay.innerText = kisses + ' Kisses Given ❤️';
-        streakSpan.innerText = 'Streak: ' + streak + ' 🔥';
-        createHyperBurst(25);
-      });
-
-      // === LOVE CLICKER ===
-      let points = 0;
-      let autoActive = false;
-      document.getElementById('heartClicker').addEventListener('click', () => {
-        points+=5; document.getElementById('points').innerText = 'Love Points: '+points;
-      });
-      document.getElementById('upgradeBtn').addEventListener('click', () => {
-        if(points>=50) {
-          points-=50; autoActive=true; document.getElementById('points').innerText = 'Love Points: '+points;
-          setInterval(() => { if(autoActive) { points+=2; document.getElementById('points').innerText = 'Love Points: '+points; } }, 3000);
-        }
-      });
-
-      // === GALLERY ===
-      const upload = document.getElementById('uploadPhoto');
-      const galleryDiv = document.getElementById('gallery');
-      upload.addEventListener('change', (e) => {
-        [...e.target.files].forEach(file => {
-          let reader = new FileReader();
-          reader.onload = (ev) => {
-            let img = document.createElement('img');
-            img.src = ev.target.result;
-            galleryDiv.appendChild(img);
-          };
-          reader.readAsDataURL(file);
-        });
-      });
-
-      // === RUNNER GAME (simple) ===
-      const runnerCanvas = document.getElementById('runnerCanvas');
-      const rCtx = runnerCanvas.getContext('2d');
-      let runnerX = 50, runnerY = 100, obstacleX = 300, score = 0, gameInterval;
-      document.getElementById('startRunner').addEventListener('click', () => {
-        if(gameInterval) clearInterval(gameInterval);
-        runnerX = 50; obstacleX = 300; score = 0;
-        gameInterval = setInterval(() => {
-          rCtx.clearRect(0,0,300,150);
-          rCtx.fillStyle = '#ff69b4';
-          rCtx.fillRect(runnerX, runnerY-20, 30, 30);
-          rCtx.fillStyle = '#8b4513';
-          rCtx.fillRect(obstacleX, 110, 20, 20);
-          obstacleX -= 5;
-          if(obstacleX < -20) { obstacleX = 300; score+=10; document.getElementById('runnerScore').innerText = 'Distance: '+score+'m'; }
-          if(Math.abs(runnerX - obstacleX) < 25 && runnerY>90) {
-            alert('💖 You ran into love! +10 kisses!');
-            kisses+=10; kissDisplay.innerText = kisses + ' Kisses Given ❤️';
-            obstacleX = 300;
-          }
-        }, 50);
-        document.addEventListener('keydown', (e) => { if(e.code==='Space') runnerY=60; });
-        setInterval(() => runnerY=100, 200);
-      });
-
-      // === LOVE LETTER GENERATOR ===
-      document.getElementById('generateLetter').addEventListener('click', () => {
-        let input = document.getElementById('letterInput').value;
-        let romantic = ['My dearest Ankita, ' + input + ' You mean the world to me. Forever yours, Utsav 💌'];
-        document.getElementById('generatedLetter').innerText = romantic;
-      });
-
-      // === PLAYLIST ===
-      const playlistDiv = document.getElementById('playlist');
-      const songs = ['Perfect - Ed Sheeran', 'Tum Hi Ho - Arijit', 'Love Story - Taylor', 'Je t\'aime'];
-      playlistDiv.innerHTML = songs.map(s => `<div>🎵 ${s} <button class="hyper-btn">Play</button></div>`).join('');
-      playlistDiv.querySelectorAll('button').forEach(btn => btn.addEventListener('click', () => alert('🎶 Playing in our hearts!')));
-
-      // extra: stop moving button re-enable moving
-      stopBtn.addEventListener('click', () => clearInterval(moveInterval));
-    })();
-  </script>
+<script src="script.js"></script>
 </body>
 </html>
