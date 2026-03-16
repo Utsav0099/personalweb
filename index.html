@@ -15,15 +15,14 @@
 
     body {
       min-height: 100vh;
-      background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+      background: linear-gradient(-45deg, #ff758c, #ff7eb3, #ff9a9e, #fecfef);
       background-size: 400% 400%;
-      animation: gradient 12s ease infinite;
-      font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+      animation: gradient 15s ease infinite;
+      font-family: 'Segoe UI', Roboto, sans-serif;
       display: flex;
       align-items: center;
       justify-content: center;
       padding: 15px;
-      position: relative;
       overflow-x: hidden;
     }
 
@@ -33,84 +32,121 @@
       100% { background-position: 0% 50%; }
     }
 
-    /* Floating hearts container */
+    /* Welcome Screen overlay */
+    #welcomeScreen {
+      position: fixed;
+      inset: 0;
+      background: rgba(255, 255, 255, 0.4);
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
+      z-index: 50;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 1s ease, visibility 1s ease;
+    }
+
+    #welcomeScreen h2 {
+      color: #b02e5c;
+      font-size: 2rem;
+      margin-bottom: 30px;
+      text-align: center;
+      text-shadow: 2px 2px 4px rgba(255,255,255,0.8);
+    }
+
+    .open-btn {
+      background: linear-gradient(135deg, #ff4b2b, #ff416c);
+      color: white;
+      border: none;
+      padding: 15px 40px;
+      font-size: 1.5rem;
+      border-radius: 50px;
+      box-shadow: 0 10px 20px rgba(255, 65, 108, 0.4);
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); box-shadow: 0 10px 20px rgba(255, 65, 108, 0.4); }
+      50% { transform: scale(1.05); box-shadow: 0 15px 25px rgba(255, 65, 108, 0.6); }
+      100% { transform: scale(1); box-shadow: 0 10px 20px rgba(255, 65, 108, 0.4); }
+    }
+
     .hearts {
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+      inset: 0;
       pointer-events: none;
       z-index: 1;
     }
 
     .heart {
       position: absolute;
-      font-size: 24px;
-      color: rgba(255, 100, 150, 0.7);
+      color: rgba(255, 100, 150, 0.8);
       animation: float 5s ease-in-out infinite;
       text-shadow: 0 0 15px rgba(255,255,255,0.8);
     }
 
     @keyframes float {
-      0% { transform: translateY(0) rotate(0deg) scale(1); }
-      50% { transform: translateY(-30px) rotate(15deg) scale(1.2); }
-      100% { transform: translateY(0) rotate(-15deg) scale(1); }
+      0% { transform: translateY(0) rotate(0deg) scale(1); opacity: 1; }
+      100% { transform: translateY(-100vh) rotate(360deg) scale(1.5); opacity: 0; }
     }
 
-    /* Main container */
+    /* Main Container (Hidden initially) */
     .container {
       position: relative;
       z-index: 2;
       width: 100%;
-      max-width: 450px;
-      background: rgba(255, 255, 255, 0.25);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border-radius: 50px;
-      padding: 25px 20px;
-      border: 2px solid rgba(255,255,255,0.5);
-      box-shadow: 0 30px 50px rgba(0,0,0,0.3);
+      max-width: 480px;
+      background: rgba(255, 255, 255, 0.3);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-radius: 40px;
+      padding: 30px 20px;
+      border: 2px solid rgba(255, 255, 255, 0.6);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.15), inset 0 0 20px rgba(255,255,255,0.5);
+      display: none; /* toggled by JS */
+      opacity: 0;
     }
 
     h1 {
       font-size: 2.2rem;
       text-align: center;
-      color: white;
-      text-shadow: 3px 3px 0 rgba(0,0,0,0.2);
-      margin-bottom: 15px;
-      word-break: break-word;
+      color: #fff;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+      margin-bottom: 20px;
     }
 
     .love-note {
-      background: rgba(255, 255, 255, 0.3);
-      border-radius: 40px;
-      padding: 20px;
+      background: rgba(255, 255, 255, 0.4);
+      border-radius: 30px;
+      padding: 25px;
       margin: 15px 0;
-      border: 2px solid white;
-      color: #4a1e2b;
-      font-size: 1.3rem;
-      line-height: 1.7;
+      border: 1px solid rgba(255,255,255,0.8);
+      color: #5a2a3b;
+      font-size: 1.25rem;
+      line-height: 1.6;
       text-align: center;
-      font-weight: 600;
-      backdrop-filter: blur(5px);
+      font-weight: bold;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.05);
     }
 
-    /* Maze section */
+    /* Maze Section Upgrade */
     .maze-section {
-      background: rgba(0, 0, 0, 0.2);
-      border-radius: 40px;
-      padding: 20px 15px;
-      margin: 20px 0;
-      border: 2px solid rgba(255,255,255,0.3);
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 30px;
+      padding: 20px;
+      margin: 25px 0;
+      border: 1px solid rgba(255,255,255,0.5);
     }
 
     .maze-title {
-      color: white;
-      font-size: 1.8rem;
+      color: #fff;
+      font-size: 1.6rem;
       text-align: center;
       margin-bottom: 15px;
-      text-shadow: 2px 2px 0 #00000030;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
     }
 
     canvas {
@@ -118,171 +154,146 @@
       margin: 0 auto;
       width: 100%;
       max-width: 280px;
-      height: auto;
-      background: #f8e3e8;
-      border-radius: 30px;
-      box-shadow: 0 10px 20px rgba(0,0,0,0.3);
-      border: 3px solid white;
-      touch-action: none; /* prevent scrolling while touching canvas */
+      background: #fff5f7;
+      border-radius: 20px;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+      border: 3px solid #ffb6c1;
+      touch-action: none;
     }
 
     .maze-controls {
       display: flex;
       justify-content: center;
       gap: 15px;
-      margin: 20px 0 10px;
-      flex-wrap: wrap;
+      margin-top: 20px;
     }
 
     .arrow-btn {
       background: white;
       border: none;
-      width: 65px;
-      height: 65px;
+      width: 60px;
+      height: 60px;
       border-radius: 50%;
-      font-size: 2.2rem;
-      box-shadow: 0 8px 0 #b04b6b, 0 12px 20px rgba(0,0,0,0.3);
+      font-size: 1.8rem;
+      box-shadow: 0 6px 0 #ff9a9e, 0 10px 15px rgba(0,0,0,0.1);
       color: #d43f6b;
       cursor: pointer;
-      transition: 0.08s linear;
-      touch-action: manipulation;
-      font-weight: bold;
-      border: 2px solid #fff3f8;
+      transition: all 0.1s;
     }
 
     .arrow-btn:active {
-      transform: translateY(8px);
-      box-shadow: 0 4px 0 #b04b6b, 0 12px 20px rgba(0,0,0,0.3);
+      transform: translateY(6px);
+      box-shadow: 0 0px 0 #ff9a9e, 0 5px 10px rgba(0,0,0,0.1);
     }
 
     .maze-reset {
-      background: #ffb3c6;
-      border: 3px solid white;
-      border-radius: 50px;
-      padding: 12px 25px;
-      font-size: 1.4rem;
+      background: linear-gradient(135deg, #ff9a9e, #fecfef);
+      border: 2px solid white;
+      border-radius: 30px;
+      padding: 10px 20px;
+      font-size: 1.2rem;
       font-weight: bold;
-      color: #9e2b4f;
-      margin: 10px auto 0;
+      color: #6a1a35;
+      margin: 20px auto 0;
       display: block;
-      width: fit-content;
-      box-shadow: 0 6px 0 #b04b6b;
-      transition: 0.08s linear;
       cursor: pointer;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      transition: transform 0.1s;
     }
+    .maze-reset:active { transform: scale(0.95); }
 
-    .maze-reset:active {
-      transform: translateY(6px);
-      box-shadow: 0 2px 0 #b04b6b;
-    }
-
-    /* Annoying button area */
+    /* Catch Me Game Upgrade */
     .annoying-area {
-      background: rgba(255, 215, 230, 0.4);
-      border-radius: 60px;
-      padding: 25px 15px;
-      margin: 25px 0 15px;
-      border: 2px dashed white;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 30px;
+      padding: 20px 10px;
+      margin: 20px 0;
+      border: 2px dashed rgba(255,255,255,0.6);
       position: relative;
-      min-height: 130px;
+      min-height: 140px;
       display: flex;
       flex-direction: column;
       align-items: center;
     }
 
     .moving-btn {
-      background: linear-gradient(145deg, #ff6f91, #ff3b6f);
-      border: 3px solid white;
+      background: linear-gradient(145deg, #ff416c, #ff4b2b);
       color: white;
-      font-size: 1.5rem;
+      font-size: 1.2rem;
       font-weight: bold;
-      padding: 15px 30px;
-      border-radius: 60px;
-      box-shadow: 0 10px 0 #a12b4a, 0 15px 25px black;
-      cursor: pointer;
-      transition: 0.05s linear;
-      text-shadow: 2px 2px 0 rgba(0,0,0,0.3);
-      width: fit-content;
-      margin: 5px auto;
-      touch-action: manipulation;
-      position: relative;
-      z-index: 10;
-    }
-
-    .moving-btn:active {
-      transform: translateY(10px);
-      box-shadow: 0 5px 0 #a12b4a, 0 15px 25px black;
-    }
-
-    .stationary-btn {
-      background: #b0e0ff;
-      border: 3px solid white;
-      color: #1f4f6e;
-      font-size: 1.3rem;
       padding: 12px 25px;
       border-radius: 50px;
-      font-weight: bold;
-      box-shadow: 0 6px 0 #4f7b99;
-      margin: 10px 5px;
+      box-shadow: 0 5px 15px rgba(255, 65, 108, 0.4);
       cursor: pointer;
-      transition: 0.08s linear;
-      display: inline-block;
+      transition: all 0.1s linear;
+      z-index: 10;
+      border: 2px solid white;
     }
 
-    .stationary-btn:active {
-      transform: translateY(6px);
-      box-shadow: 0 2px 0 #4f7b99;
+    .btn-group {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+      flex-wrap: wrap;
+      justify-content: center;
     }
 
-    .stop-moving {
-      background: #ffd966;
-      border: 3px solid white;
-      color: #8a5a2e;
-      font-size: 1.2rem;
+    .stationary-btn, .stop-moving {
+      background: white;
+      border: 2px solid #ff9a9e;
+      color: #d43f6b;
       padding: 10px 20px;
-      border-radius: 40px;
-      margin: 5px;
+      border-radius: 30px;
       font-weight: bold;
-      box-shadow: 0 5px 0 #b88b3a;
       cursor: pointer;
-      transition: 0.08s linear;
+      transition: transform 0.1s;
     }
-
-    .stop-moving:active {
-      transform: translateY(5px);
-      box-shadow: 0 1px 0 #b88b3a;
-    }
+    .stationary-btn:active, .stop-moving:active { transform: scale(0.95); }
 
     .hidden-message {
-      background: white;
-      border-radius: 30px;
+      background: linear-gradient(135deg, #fff, #ffe4e1);
+      border-radius: 20px;
       padding: 20px;
       margin-top: 20px;
-      color: #c44569;
-      font-size: 1.5rem;
-      font-weight: 600;
+      color: #d43f6b;
+      font-size: 1.3rem;
+      font-weight: bold;
       text-align: center;
-      border: 3px solid #ff98b9;
+      border: 2px solid white;
       display: none;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
     }
+    .hidden-message.show { display: block; animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
 
-    .hidden-message.show {
-      display: block;
+    @keyframes popIn {
+      0% { transform: scale(0.8); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
     }
 
     footer {
       text-align: center;
-      color: white;
+      color: #fff;
       font-size: 1.2rem;
-      margin-top: 15px;
-      text-shadow: 2px 2px 0 #00000030;
+      margin-top: 20px;
+      font-weight: bold;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
     }
   </style>
 </head>
 <body>
+
+  <audio id="bgMusic" loop>
+    <source src="music.mp3" type="audio/mpeg">
+  </audio>
+
+  <div id="welcomeScreen">
+    <h2>A special surprise for Ankita 💌</h2>
+    <button class="open-btn" id="startBtn">Tap to Open 💕</button>
+  </div>
+
   <div class="hearts" id="heartsContainer"></div>
 
-  <div class="container">
+  <div class="container" id="mainContent">
     <h1>💞 For My Babe Ankita 💞</h1>
 
     <div class="love-note">
@@ -293,25 +304,22 @@
       aja, bholi, ra sadhai! 💖
     </div>
 
-    <!-- Maze Game Section -->
     <div class="maze-section">
       <div class="maze-title">🧩 Maze of Love 🧩</div>
       <canvas id="mazeCanvas" width="300" height="300"></canvas>
-
+      
       <div class="maze-controls">
         <button class="arrow-btn" id="moveUp">⬆️</button>
         <button class="arrow-btn" id="moveLeft">⬅️</button>
         <button class="arrow-btn" id="moveDown">⬇️</button>
         <button class="arrow-btn" id="moveRight">➡️</button>
       </div>
-
       <button class="maze-reset" id="resetMaze">⟲ Reset Maze</button>
     </div>
 
-    <!-- Annoying / Fun Area -->
     <div class="annoying-area">
       <div class="moving-btn" id="movingButton">💢 Catch me!</div>
-      <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 10px;">
+      <div class="btn-group">
         <button class="stationary-btn" id="easyButton">💋 Click me instead</button>
         <button class="stop-moving" id="stopMovingBtn">🛑 Stop moving!</button>
       </div>
@@ -319,185 +327,146 @@
 
     <div class="hidden-message" id="annoyingMessage"></div>
 
-    <footer>with infinite love, [Your Name]</footer>
+    <footer>with infinite love, yourutsav</footer>
   </div>
 
   <script>
-    (function() {
-      // ==================== FLOATING HEARTS ====================
-      const heartsContainer = document.getElementById('heartsContainer');
-      const heartSymbols = ['❤️', '🧡', '💛', '💚', '💙', '💜', '💖', '💗', '💘', '💝'];
-      for (let i = 0; i < 25; i++) {
-        const heart = document.createElement('div');
-        heart.className = 'heart';
-        heart.textContent = heartSymbols[Math.floor(Math.random() * heartSymbols.length)];
-        heart.style.left = Math.random() * 100 + '%';
-        heart.style.top = Math.random() * 100 + '%';
-        heart.style.fontSize = (Math.floor(Math.random() * 30) + 18) + 'px';
-        heart.style.animationDuration = (Math.random() * 6 + 4).toFixed(2) + 's';
-        heart.style.animationDelay = Math.random() * 5 + 's';
-        heart.style.opacity = Math.random() * 0.5 + 0.5;
-        heartsContainer.appendChild(heart);
-      }
+    // --- Audio & Welcome Screen Logic ---
+    const startBtn = document.getElementById('startBtn');
+    const welcomeScreen = document.getElementById('welcomeScreen');
+    const mainContent = document.getElementById('mainContent');
+    const bgMusic = document.getElementById('bgMusic');
 
-      // ==================== MAZE GAME ====================
-      const canvas = document.getElementById('mazeCanvas');
-      const ctx = canvas.getContext('2d');
-      const cellSize = 30; // 300/10
-      const rows = 10, cols = 10;
+    startBtn.addEventListener('click', () => {
+      // Play music
+      bgMusic.play().catch(error => console.log("Audio playback failed:", error));
+      
+      // Hide welcome screen and show content
+      welcomeScreen.style.opacity = '0';
+      setTimeout(() => {
+        welcomeScreen.style.visibility = 'hidden';
+        welcomeScreen.style.display = 'none';
+        mainContent.style.display = 'block';
+        // Trigger reflow for fade in
+        void mainContent.offsetWidth;
+        mainContent.style.opacity = '1';
+      }, 800);
+    });
 
-      // Maze layout: 0 = path, 1 = wall
-      // Predefined simple maze (easy to solve but fun)
-      const maze = [
-        [0, 1, 0, 0, 0, 1, 0, 0, 0, 0],
-        [0, 1, 1, 1, 0, 1, 1, 1, 1, 0],
-        [0, 0, 0, 1, 0, 0, 0, 0, 1, 0],
-        [1, 1, 0, 1, 1, 1, 1, 0, 1, 0],
-        [0, 1, 0, 0, 0, 0, 1, 0, 0, 0],
-        [0, 1, 1, 1, 1, 0, 1, 1, 1, 0],
-        [0, 0, 0, 0, 1, 0, 0, 0, 1, 0],
-        [1, 1, 1, 0, 1, 1, 1, 0, 1, 0],
-        [0, 0, 1, 0, 0, 0, 1, 0, 0, 0],
-        [0, 0, 1, 0, 1, 1, 1, 0, 1, 0]  // goal at (9,9) is a path (0)
-      ];
+    // --- Floating Hearts Logic ---
+    const heartsContainer = document.getElementById('heartsContainer');
+    const heartSymbols = ['❤️', '💖', '💗', '💓', '💞', '💕', '💘'];
+    
+    function createHeart() {
+      const heart = document.createElement('div');
+      heart.className = 'heart';
+      heart.textContent = heartSymbols[Math.floor(Math.random() * heartSymbols.length)];
+      heart.style.left = Math.random() * 100 + 'vw';
+      heart.style.fontSize = (Math.random() * 20 + 15) + 'px';
+      heart.style.top = '100vh';
+      heart.style.animationDuration = (Math.random() * 3 + 4) + 's';
+      heartsContainer.appendChild(heart);
+      setTimeout(() => heart.remove(), 7000);
+    }
+    setInterval(createHeart, 400); // Create a new heart continuously
 
-      // Player position
-      let player = { x: 0, y: 0 };
-      const goal = { x: 9, y: 9 };
+    // --- Maze Logic ---
+    const canvas = document.getElementById('mazeCanvas');
+    const ctx = canvas.getContext('2d');
+    const cellSize = 30;
+    const rows = 10, cols = 10;
 
-      function drawMaze() {
-        ctx.clearRect(0, 0, 300, 300);
-        // Draw grid
-        for (let row = 0; row < rows; row++) {
-          for (let col = 0; col < cols; col++) {
-            const x = col * cellSize;
-            const y = row * cellSize;
-            if (maze[row][col] === 1) {
-              ctx.fillStyle = '#c06d8b'; // wall color
-              ctx.fillRect(x, y, cellSize-1, cellSize-1);
-            } else {
-              ctx.fillStyle = '#ffe4ec'; // path color
-              ctx.fillRect(x, y, cellSize-1, cellSize-1);
-            }
-            ctx.strokeStyle = '#ffffff30';
-            ctx.strokeRect(x, y, cellSize, cellSize);
-          }
-        }
-        // Draw goal (pink heart)
-        ctx.font = '24px Arial';
-        ctx.fillStyle = '#ff4d6d';
-        ctx.fillText('💖', goal.x * cellSize + 3, goal.y * cellSize + 26);
-        // Draw player (red heart)
-        ctx.font = '28px Arial';
-        ctx.fillStyle = '#ff1a4c';
-        ctx.fillText('❤️', player.x * cellSize + 2, player.y * cellSize + 26);
-      }
+    const maze = [
+      [0, 1, 0, 0, 0, 1, 0, 0, 0, 0],
+      [0, 1, 1, 1, 0, 1, 1, 1, 1, 0],
+      [0, 0, 0, 1, 0, 0, 0, 0, 1, 0],
+      [1, 1, 0, 1, 1, 1, 1, 0, 1, 0],
+      [0, 1, 0, 0, 0, 0, 1, 0, 0, 0],
+      [0, 1, 1, 1, 1, 0, 1, 1, 1, 0],
+      [0, 0, 0, 0, 1, 0, 0, 0, 1, 0],
+      [1, 1, 1, 0, 1, 1, 1, 0, 1, 0],
+      [0, 0, 1, 0, 0, 0, 1, 0, 0, 0],
+      [0, 0, 1, 0, 1, 1, 1, 0, 1, 0]
+    ];
 
-      function movePlayer(dx, dy) {
-        const newX = player.x + dx;
-        const newY = player.y + dy;
-        if (newX >= 0 && newX < cols && newY >= 0 && newY < rows && maze[newY][newX] === 0) {
-          player.x = newX;
-          player.y = newY;
-          drawMaze();
-          if (player.x === goal.x && player.y === goal.y) {
-            setTimeout(() => {
-              alert('🎉 You reached the heart! I love you, babe! 🎉');
-              // Add extra floating hearts as reward
-              for (let i = 0; i < 8; i++) {
-                const h = document.createElement('div');
-                h.className = 'heart';
-                h.textContent = '💖';
-                h.style.left = Math.random() * 100 + '%';
-                h.style.top = Math.random() * 100 + '%';
-                h.style.fontSize = '40px';
-                h.style.animation = 'float 2s ease-in-out infinite';
-                heartsContainer.appendChild(h);
-                setTimeout(() => h.remove(), 3000);
-              }
-            }, 100);
-          }
+    let player = { x: 0, y: 0 };
+    const goal = { x: 9, y: 9 };
+
+    function drawMaze() {
+      ctx.clearRect(0, 0, 300, 300);
+      for (let row = 0; row < rows; row++) {
+        for (let col = 0; col < cols; col++) {
+          const x = col * cellSize;
+          const y = row * cellSize;
+          ctx.fillStyle = maze[row][col] === 1 ? '#ff7eb3' : '#fff5f7';
+          ctx.fillRect(x, y, cellSize, cellSize);
         }
       }
+      ctx.font = '22px Arial';
+      ctx.fillText('💖', goal.x * cellSize + 2, goal.y * cellSize + 24);
+      ctx.fillText('❤️', player.x * cellSize + 2, player.y * cellSize + 24);
+    }
 
-      document.getElementById('moveUp').addEventListener('click', () => movePlayer(0, -1));
-      document.getElementById('moveDown').addEventListener('click', () => movePlayer(0, 1));
-      document.getElementById('moveLeft').addEventListener('click', () => movePlayer(-1, 0));
-      document.getElementById('moveRight').addEventListener('click', () => movePlayer(1, 0));
-
-      document.getElementById('resetMaze').addEventListener('click', () => {
-        player = { x: 0, y: 0 };
+    function movePlayer(dx, dy) {
+      const newX = player.x + dx, newY = player.y + dy;
+      if (newX >= 0 && newX < cols && newY >= 0 && newY < rows && maze[newY][newX] === 0) {
+        player.x = newX; player.y = newY;
         drawMaze();
-      });
-
-      drawMaze();
-
-      // ==================== ANNOYING MOVING BUTTON ====================
-      const movingBtn = document.getElementById('movingButton');
-      const annoyingMsg = document.getElementById('annoyingMessage');
-      const annoyingArea = document.querySelector('.annoying-area');
-      let moveEnabled = true;
-
-      // Function to move the button randomly inside the annoying area
-      function moveButtonRandomly() {
-        if (!moveEnabled) return;
-        const areaRect = annoyingArea.getBoundingClientRect();
-        const btnRect = movingBtn.getBoundingClientRect();
-
-        // Compute max left/top relative to area (accounting for button size)
-        const maxLeft = areaRect.width - btnRect.width;
-        const maxTop = areaRect.height - btnRect.height - 20; // keep inside with some padding
-
-        if (maxLeft > 0 && maxTop > 0) {
-          const newLeft = Math.random() * maxLeft;
-          const newTop = Math.random() * maxTop;
-          movingBtn.style.position = 'absolute';
-          movingBtn.style.left = newLeft + 'px';
-          movingBtn.style.top = newTop + 'px';
+        if (player.x === goal.x && player.y === goal.y) {
+          setTimeout(() => alert('🎉 You reached my heart! I love you, Ankita! 🎉'), 100);
         }
       }
+    }
 
-      // Move on touch / mouse enter
-      movingBtn.addEventListener('touchstart', (e) => {
-        e.preventDefault();
-        moveButtonRandomly();
-      });
-      movingBtn.addEventListener('mouseenter', (e) => {
-        if (window.innerWidth > 768) moveButtonRandomly(); // for desktop
-      });
+    document.getElementById('moveUp').addEventListener('click', () => movePlayer(0, -1));
+    document.getElementById('moveDown').addEventListener('click', () => movePlayer(0, 1));
+    document.getElementById('moveLeft').addEventListener('click', () => movePlayer(-1, 0));
+    document.getElementById('moveRight').addEventListener('click', () => movePlayer(1, 0));
+    document.getElementById('resetMaze').addEventListener('click', () => { player = {x:0, y:0}; drawMaze(); });
 
-      // When finally clicked (if you manage to catch it)
-      movingBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        if (!moveEnabled) {
-          annoyingMsg.textContent = '💘 You caught me, my love! I love you, Ankita! 💘';
-        } else {
-          annoyingMsg.textContent = '😘 You got me! Always yours. 😘';
-        }
-        annoyingMsg.classList.add('show');
-        // Disable further moving
-        moveEnabled = false;
-        movingBtn.style.position = 'static';
-        movingBtn.style.transform = 'none';
-      });
+    drawMaze();
 
-      // Stop moving button
-      document.getElementById('stopMovingBtn').addEventListener('click', () => {
-        moveEnabled = false;
-        movingBtn.style.position = 'static';
-        movingBtn.style.transform = 'none';
-        annoyingMsg.textContent = 'Okay, I\'ll stay still for you ❤️';
-        annoyingMsg.classList.add('show');
-      });
+    // --- Catch Me Logic ---
+    const movingBtn = document.getElementById('movingButton');
+    const annoyingMsg = document.getElementById('annoyingMessage');
+    const annoyingArea = document.querySelector('.annoying-area');
+    let moveEnabled = true;
 
-      // Easy button always shows love
-      document.getElementById('easyButton').addEventListener('click', () => {
-        annoyingMsg.textContent = 'Ankita, you are the best thing that ever happened to me! 🌹';
-        annoyingMsg.classList.add('show');
-      });
+    function moveButtonRandomly() {
+      if (!moveEnabled) return;
+      const areaRect = annoyingArea.getBoundingClientRect();
+      const btnRect = movingBtn.getBoundingClientRect();
+      const maxLeft = areaRect.width - btnRect.width - 20;
+      const maxTop = areaRect.height - btnRect.height - 20;
+      
+      if (maxLeft > 0 && maxTop > 0) {
+        movingBtn.style.position = 'absolute';
+        movingBtn.style.left = (Math.random() * maxLeft + 10) + 'px';
+        movingBtn.style.top = (Math.random() * maxTop + 10) + 'px';
+      }
+    }
 
-      // Hide message when tapping elsewhere (optional, not needed)
-    })();
+    movingBtn.addEventListener('touchstart', (e) => { e.preventDefault(); moveButtonRandomly(); });
+    movingBtn.addEventListener('mouseenter', () => { if(window.innerWidth > 768) moveButtonRandomly(); });
+    
+    movingBtn.addEventListener('click', () => {
+      annoyingMsg.textContent = moveEnabled ? '😘 You got me! Always yours. 😘' : '💘 You caught me! I love you! 💘';
+      annoyingMsg.classList.add('show');
+      moveEnabled = false;
+      movingBtn.style.position = 'static';
+    });
+
+    document.getElementById('stopMovingBtn').addEventListener('click', () => {
+      moveEnabled = false;
+      movingBtn.style.position = 'static';
+      annoyingMsg.textContent = 'Okay, I\'ll stay still for you ❤️';
+      annoyingMsg.classList.add('show');
+    });
+
+    document.getElementById('easyButton').addEventListener('click', () => {
+      annoyingMsg.textContent = 'Ankita, you are the best thing in my life! 🌹';
+      annoyingMsg.classList.add('show');
+    });
   </script>
 </body>
 </html>
