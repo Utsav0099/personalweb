@@ -11,73 +11,108 @@
     <source src="music.mp3" type="audio/mpeg">
   </audio>
 
-  <!-- Welcome Screen -->
+  <!-- Welcome -->
   <div id="welcomeScreen">
-    <h2>A special surprise for Ankita 💌</h2>
-    <button class="open-btn" id="startBtn">Tap to Open 💕</button>
+    <h2 class="hyper-text">A special surprise for Ankita 💌</h2>
+    <button class="open-btn hyper-btn" id="startBtn">Tap to Open 💕</button>
   </div>
 
-  <!-- Floating Hearts Container -->
   <div class="hearts" id="heartsContainer"></div>
 
-  <!-- Main Content -->
   <div class="container" id="mainContent">
-    <h1>💞 For My Babe Ankita 💞</h1>
+    <h1 class="hyper-text">💞 For My Babe Ankita 💞</h1>
 
-    <!-- Love Note -->
-    <div class="love-note">
-      🌸 Ankita, timi mero sansar ho.<br>
-      Timro saath ma ma sadhai khusi chu.<br>
-      Timro muskaan le mero din ujyaalo banauchha.<br>
-      Ma timlai maya garchhu, babe — aja, bholi, ra sadhai! 💖
-    </div>
+    <div class="love-note hyper-note">🌸 Ankita, timi mero sansar ho...<br>Ma timlai maya garchhu — aja, bholi, ra sadhai! 💖</div>
 
-    <!-- Maze of Love -->
-    <div class="maze-section">
-      <div class="maze-title">🧩 Maze of Love 🧩</div>
+    <!-- Original Maze -->
+    <div class="game-section">
+      <div class="maze-title hyper-text">🧩 Maze of Love 🧩</div>
       <canvas id="mazeCanvas" width="300" height="300"></canvas>
       <div class="maze-controls">
-        <button class="arrow-btn" id="moveUp">⬆️</button>
-        <button class="arrow-btn" id="moveLeft">⬅️</button>
-        <button class="arrow-btn" id="moveDown">⬇️</button>
-        <button class="arrow-btn" id="moveRight">➡️</button>
+        <button class="arrow-btn hyper-btn" id="moveUp">⬆️</button>
+        <button class="arrow-btn hyper-btn" id="moveLeft">⬅️</button>
+        <button class="arrow-btn hyper-btn" id="moveDown">⬇️</button>
+        <button class="arrow-btn hyper-btn" id="moveRight">➡️</button>
       </div>
-      <button class="maze-reset" id="resetMaze">⟲ Reset Maze</button>
+      <button class="maze-reset hyper-btn" id="resetMaze">⟲ Reset Maze</button>
     </div>
 
-    <!-- Catch Me Game -->
-    <div class="annoying-area">
-      <div class="moving-btn" id="movingButton">💢 Catch me!</div>
+    <!-- Catch Me -->
+    <div class="game-section annoying-area">
+      <div class="moving-btn hyper-btn" id="movingButton">💢 Catch me!</div>
       <div class="btn-group">
-        <button class="stationary-btn" id="easyButton">💋 Click me instead</button>
-        <button class="stop-moving" id="stopMovingBtn">🛑 Stop moving!</button>
+        <button class="stationary-btn hyper-btn" id="easyButton">💋 Click me instead</button>
+        <button class="stop-moving hyper-btn" id="stopMovingBtn">🛑 Stop moving!</button>
       </div>
     </div>
     <div class="hidden-message" id="annoyingMessage"></div>
 
-    <!-- NEW: Memory Match Game -->
+    <!-- Memory Match -->
     <div class="game-section">
-      <div class="maze-title">💑 Memory Match of Our Love 💑</div>
+      <div class="maze-title hyper-text">💑 Memory Match of Our Love 💑</div>
       <div id="memoryGrid" class="memory-grid"></div>
-      <button class="maze-reset" id="resetMemory">New Game ❤️</button>
+      <button class="maze-reset hyper-btn" id="resetMemory">New Game ❤️</button>
     </div>
 
-    <!-- NEW: Love Quiz -->
+    <!-- Quiz -->
     <div class="game-section">
-      <div class="maze-title">❤️ How Well Do You Know Our Love? ❤️</div>
-      <div id="quizContainer">
-        <button class="maze-reset" id="startQuiz">Start Quiz 💕</button>
-      </div>
+      <div class="maze-title hyper-text">❤️ How Well Do You Know Our Love? ❤️</div>
+      <div id="quizContainer"></div>
     </div>
 
-    <!-- NEW: Romantic Fortune Teller -->
+    <!-- Fortune -->
     <div class="game-section">
-      <div class="maze-title">🌟 Your Daily Love Fortune 🌟</div>
-      <button class="maze-reset" id="fortuneBtn">Tell me a sweet message for Ankita 💌</button>
+      <div class="maze-title hyper-text">🌟 Your Daily Love Fortune 🌟</div>
+      <button class="maze-reset hyper-btn" id="fortuneBtn">Tell me a sweet message 💌</button>
       <div id="fortuneResult" class="love-note"></div>
     </div>
 
-    <footer>with infinite love, yourutsav 💖</footer>
+    <!-- Kiss Counter -->
+    <div class="game-section">
+      <div class="maze-title hyper-text">💋 Virtual Kiss Counter 💋</div>
+      <div id="kissDisplay" class="hyper-text" style="font-size:3rem;text-align:center;margin:15px 0;">0 Kisses ❤️</div>
+      <button id="kissBtn" class="big-btn hyper-btn">Kiss Ankita Right Now! 😘</button>
+      <div id="streak" class="hyper-text" style="text-align:center;color:#d43f6b;">Streak: 0 days 🔥</div>
+    </div>
+
+    <!-- Love Clicker -->
+    <div class="game-section">
+      <div class="maze-title hyper-text">❤️ Love Clicker ❤️</div>
+      <button id="heartClicker" class="hyper-btn" style="font-size:110px;background:none;border:none;cursor:pointer;width:100%;">💖</button>
+      <div id="points" class="hyper-text" style="font-size:2rem;text-align:center;">Love Points: 0</div>
+      <button id="upgradeBtn" class="maze-reset hyper-btn">Buy Auto-Kisses (50 pts)</button>
+    </div>
+
+    <!-- Gallery -->
+    <div class="game-section">
+      <div class="maze-title hyper-text">📸 Our Beautiful Memories 📸</div>
+      <input type="file" id="uploadPhoto" multiple accept="image/*" class="hyper-btn">
+      <div id="gallery" class="gallery-grid"></div>
+    </div>
+
+    <!-- Runner -->
+    <div class="game-section">
+      <div class="maze-title hyper-text">🏃‍♂️ Run to Forever 🏃‍♀️</div>
+      <canvas id="runnerCanvas" width="300" height="150"></canvas>
+      <button id="startRunner" class="maze-reset hyper-btn">Start Running to Her ❤️</button>
+      <div id="runnerScore" class="hyper-text">Distance: 0m</div>
+    </div>
+
+    <!-- Letter Generator -->
+    <div class="game-section">
+      <div class="maze-title hyper-text">✉️ Love Letter Generator ✉️</div>
+      <textarea id="letterInput" placeholder="Type something sweet..." class="hyper-note"></textarea>
+      <button id="generateLetter" class="maze-reset hyper-btn">Make it Romantic 💌</button>
+      <div id="generatedLetter" class="love-note"></div>
+    </div>
+
+    <!-- Playlist -->
+    <div class="game-section">
+      <div class="maze-title hyper-text">🎵 Our Romantic Playlist 🎵</div>
+      <div id="playlist"></div>
+    </div>
+
+    <footer class="hyper-text">with infinite love, yourutsav 💖</footer>
   </div>
 
   <script src="script.js"></script>
