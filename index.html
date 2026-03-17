@@ -361,15 +361,35 @@
     </div>
   </section>
 
-  <!-- ========== PHOTO GALLERY (public + upload) ========== -->
+  <!-- ========== PHOTO GALLERY (persistent via localStorage) ========== -->
   <section class="section">
     <div class="section-header"><span class="section-icon">📸</span><h2>Our Memory Gallery</h2></div>
     <div class="glass-card gallery-card">
       <div class="gallery-upload">
         <label for="photoUpload" class="glass-btn small upload-label">📎 Add Our Photos</label>
         <input type="file" id="photoUpload" multiple accept="image/*" style="display:none">
+        <p class="gallery-hint">Photos are saved in your browser (visible only to you).</p>
       </div>
       <div id="photoGallery" class="photo-gallery"></div>
+    </div>
+  </section>
+
+  <!-- ========== LOVE CALCULATOR ========== -->
+  <section class="section">
+    <div class="section-header"><span class="section-icon">💘</span><h2>Love Calculator</h2></div>
+    <div class="glass-card" style="padding:30px; text-align:center;">
+      <button id="loveCalcBtn" class="glass-btn primary">Calculate Our Compatibility</button>
+      <div id="loveResult" style="margin-top:20px; font-size:1.5rem; font-family:var(--font-display);"></div>
+    </div>
+  </section>
+
+  <!-- ========== MESSAGE WALL ========== -->
+  <section class="section">
+    <div class="section-header"><span class="section-icon">🗒️</span><h2>Message Wall</h2></div>
+    <div class="glass-card" style="padding:30px;">
+      <textarea id="wallMessage" placeholder="Leave a sweet note for Ankita..." rows="3" style="width:100%; padding:12px; border-radius:16px; border:1px solid var(--glass-border); background:var(--glass-bg); color:var(--text);"></textarea>
+      <button id="postMessageBtn" class="glass-btn small" style="margin-top:12px;">Post Message</button>
+      <div id="wallMessages" class="wall-messages" style="margin-top:20px;"></div>
     </div>
   </section>
 
