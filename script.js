@@ -2,19 +2,18 @@
   'use strict';
 
   // =====================================================
-  // FIREBASE INITIALIZATION (replace with your config)
+  // FIREBASE INITIALIZATION (your config)
   // =====================================================
   const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_PROJECT.firebaseapp.com",
-    databaseURL: "https://YOUR_PROJECT-default-rtdb.firebaseio.com",
-    projectId: "YOUR_PROJECT",
-    storageBucket: "YOUR_PROJECT.appspot.com",
-    messagingSenderId: "YOUR_SENDER_ID",
-    appId: "YOUR_APP_ID"
+    apiKey: "AIzaSyDar4CBj2gpOOt9HLGpPCk817pCJDBmidA",
+    authDomain: "formykanchi.firebaseapp.com",
+    projectId: "formykanchi",
+    storageBucket: "formykanchi.firebasestorage.app",
+    messagingSenderId: "901494864134",
+    appId: "1:901494864134:web:eee0fb2697804e0fd58687",
+    measurementId: "G-60070SSK3H"
   };
 
-  // Initialize Firebase
   firebase.initializeApp(firebaseConfig);
   const database = firebase.database();
   const storage = firebase.storage();
@@ -1026,7 +1025,7 @@
   function initGallery() {
     const gallery = $('photoGallery');
 
-    // Listen for new images from Firebase Storage
+    // Listen for existing images
     const imagesRef = storage.ref('gallery');
     imagesRef.listAll().then(res => {
       res.items.forEach(itemRef => {
@@ -1092,7 +1091,7 @@
     const postBtn = $('postMessageBtn');
     const messagesRef = database.ref('messages');
 
-    // Load messages on startup
+    // Load messages on startup and when new ones arrive
     messagesRef.on('child_added', snapshot => {
       const msg = snapshot.val();
       addMessageToDOM(msg.text, msg.timestamp);
