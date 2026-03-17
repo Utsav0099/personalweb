@@ -6,105 +6,495 @@
   <title>For My Kanchi 💕</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Dancing+Script:wght@400;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-  
-  <!-- Firebase for LIVE SHARED PHOTO GALLERY (anyone can upload, everyone sees instantly) -->
-  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-storage-compat.js"></script>
-
-  <style>
-    /* ==================== YOUR ORIGINAL FULL CSS (unchanged + tiny fixes) ==================== */
-    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
-    :root {
-      --pink1: #ff4d8d; --pink2: #ff8fb1; --pink3: #ffb3c6; --pink4: #ffd6e7; --pink5: #fff0f6;
-      --deep: #c9184a; --gold: #ffd700; --purple: #d4a3e3;
-      --glass-bg: rgba(255,255,255,0.18); --glass-bg-dark: rgba(255,255,255,0.10);
-      --glass-border: rgba(255,255,255,0.45); --glass-shadow: 0 20px 60px rgba(255,77,141,0.25);
-      --glass-blur: blur(22px); --text: #3a0a1f; --text-soft: #7a3050; --text-muted: rgba(58,10,31,0.55);
-      --radius: 28px; --radius-sm: 16px;
-      --font-display: 'Dancing Script', cursive; --font-body: 'Poppins', sans-serif; --font-serif: 'Playfair Display', serif;
-      --transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275); --header-h: 70px;
-    }
-    .dark-mode { --glass-bg: rgba(30,0,20,0.38); --glass-bg-dark: rgba(20,0,15,0.55);
-      --glass-border: rgba(255,150,200,0.18); --glass-shadow: 0 20px 60px rgba(255,77,141,0.18);
-      --text: #ffe0ee; --text-soft: #ffb3c6; --text-muted: rgba(255,200,220,0.6); --pink5: #1a0010; }
-    
-    body { font-family: var(--font-body); color: var(--text); min-height: 100vh;
-      background: linear-gradient(135deg, #ff758c 0%, #ffb3c6 25%, #ffd6e7 50%, #e8b4d0 75%, #ff758c 100%);
-      background-size: 400% 400%; animation: bgShift 12s ease infinite; overflow-x: hidden;
-      cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><text y='22' font-size='22'>💖</text></svg>") 12 12, auto; }
-    .dark-mode body, body.dark-mode { background: linear-gradient(135deg, #2d0020 0%, #4a0030 25%, #1a0015 50%, #3a0025 75%, #2d0020 100%); }
-    @keyframes bgShift { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
-    
-    #trailCanvas { position:fixed; inset:0; pointer-events:none; z-index:0; opacity:0.7; }
-    #particles { position:fixed; inset:0; pointer-events:none; z-index:1; overflow:hidden; }
-    .particle { position:absolute; font-size:18px; pointer-events:none; animation:floatUp linear forwards; opacity:0.6; }
-    @keyframes floatUp { 0%{transform:translateY(0) rotate(0deg) scale(1); opacity:0.7} 100%{transform:translateY(-110vh) rotate(720deg) scale(0.3); opacity:0} }
-    
-    /* iOS-style emoji polish */
-    .big-heart-display, .orbit-dot, .kiss-anim, .reason-petal, .catch-target { filter: drop-shadow(0 4px 12px rgba(255,45,85,0.45)); }
-
-    /* GAMES: COMPACT CARD + FULL CANVAS SIZE (380px as requested) */
-    .game-card { max-width:420px; margin:20px auto; padding:16px; }
-    canvas { width:100% !important; height:auto !important; max-height:380px; border-radius:20px; box-shadow:0 10px 30px rgba(0,0,0,0.3); image-rendering:crisp-edges; }
-    .maze-wrapper { width:380px !important; height:380px !important; margin:0 auto 20px; }
-    #snakeCanvas, #mazeCanvas { width:380px; height:380px; }
-
-    /* Vinyl real spinning */
-    .vinyl.playing .vinyl-inner { animation:vinylSpin 1.8s linear infinite; }
-    @keyframes vinylSpin { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
-
-    /* Playlist iOS feel */
-    .playlist-items { max-height:320px; overflow-y:auto; }
-    .playlist-item { display:flex; justify-content:space-between; align-items:center; padding:14px 16px; margin:4px 0; border-radius:12px; background:rgba(255,255,255,0.08); cursor:pointer; transition:all .2s; }
-    .playlist-item:hover { background:rgba(255,255,255,0.18); transform:translateX(6px); }
-    .playlist-item.playing { background:rgba(255,45,85,0.3); color:#ff2d55; }
-
-    /* Photo gallery live */
-    .photo-gallery { display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:12px; }
-    .photo-gallery img { width:100%; border-radius:16px; object-fit:cover; aspect-ratio:1/1; box-shadow:0 6px 20px rgba(0,0,0,0.25); transition:transform .3s; }
-    .photo-gallery img:hover { transform:scale(1.06); }
-
-    /* Rest of your original CSS (exactly as you gave) */
-    #welcomeScreen { position:fixed; inset:0; z-index:1000; display:flex; align-items:center; justify-content:center; background:linear-gradient(135deg,rgba(255,105,180,0.6),rgba(255,182,193,0.5)); backdrop-filter:blur(30px); transition:opacity .8s,visibility .8s; }
-    #welcomeScreen.fade-out { opacity:0; visibility:hidden; pointer-events:none; }
-    /* ... (all your other classes - header, hero, glass-card, buttons, maze, memory, kiss, clicker, timeline, reasons, promises, music, footer, timer, etc. - are kept 100% intact) */
-    /* I have copied every single rule you provided - no deletions */
-    /* Only additions: the 5 lines above for games + vinyl + playlist + photos */
-  </style>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<!-- YOUR ORIGINAL HTML STRUCTURE (kept exactly) + tiny updates for new features -->
+<!-- Floating particles background -->
 <div id="particles"></div>
+
+<!-- Cursor trail -->
 <canvas id="trailCanvas"></canvas>
 
-<div id="welcomeScreen"> <!-- your exact welcome screen --> ... </div>
-
-<div id="mainApp" class="hidden">
-  <!-- header, hero, timer, letter, maze, memory, catch, snake, quiz, fortune, kiss, clicker, letter-gen, 
-       PHOTO GALLERY (live), timeline, reasons, promises, MUSIC PLAYER, footer -->
-  
-  <!-- ========== PHOTO GALLERY (LIVE SHARED) ========== -->
-  <section class="section">
-    <div class="section-header"><span class="section-icon">📸</span><h2>Our Live Memory Gallery</h2>
-      <p class="section-sub">Anyone in the world can add photos • Real-time for everyone 💕</p>
+<!-- ===================== WELCOME SCREEN ===================== -->
+<div id="welcomeScreen">
+  <div class="welcome-inner">
+    <div class="welcome-petals" id="welcomePetals"></div>
+    <div class="welcome-icon">💌</div>
+    <h1 class="welcome-title">A Secret World</h1>
+    <p class="welcome-sub">made just for you, Ankita</p>
+    <div class="welcome-hearts">
+      <span>💖</span><span>💗</span><span>💕</span><span>💘</span><span>💝</span>
     </div>
-    <div class="glass-card gallery-card">
-      <div class="gallery-upload">
-        <label for="photoUpload" class="glass-btn small upload-label">📎 Add Photo (visible to EVERYONE instantly)</label>
-        <input type="file" id="photoUpload" multiple accept="image/*" style="display:none">
+    <button id="startBtn" class="glass-btn primary pulse-btn">
+      <span>Open My Heart</span>
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.593c-5.63-5.539-11-10.297-11-14.402 0-3.791 3.068-5.191 5.281-5.191 1.312 0 4.151.501 5.719 4.457 1.59-3.968 4.464-4.447 5.726-4.447 2.54 0 5.274 1.621 5.274 5.181 0 4.069-5.136 8.625-11 14.402z"/></svg>
+    </button>
+    <p class="welcome-hint">🔊 Best with headphones on</p>
+  </div>
+</div>
+
+<!-- ===================== MAIN APP ===================== -->
+<div id="mainApp" class="hidden">
+
+  <!-- Sticky Header -->
+  <header id="siteHeader">
+    <div class="header-inner">
+      <div class="header-logo">
+        <span class="logo-heart">💞</span>
+        <span class="logo-text">Utsav <span class="heart-sep">♾️</span> Ankita</span>
       </div>
-      <div id="photoGallery" class="photo-gallery"></div>
+      <div class="header-right">
+        <div class="love-meter-mini">
+          <span class="meter-label">Love</span>
+          <div class="meter-bar"><div id="miniMeter" class="meter-fill"></div></div>
+          <span id="miniPercent">∞%</span>
+        </div>
+        <button id="musicToggle" class="icon-btn" title="Toggle Music">🎵</button>
+        <button id="themeToggle" class="icon-btn" title="Toggle Theme">🌙</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ========== HERO SECTION ========== -->
+  <section class="hero-section">
+    <div class="hero-content">
+      <div class="hero-badge">✨ For You, Always ✨</div>
+      <h1 class="hero-title">
+        <span class="line1">मेरी जान,</span>
+        <span class="line2">Ankita</span>
+      </h1>
+      <p class="hero-poem">
+        तिम्रो मुस्कान मेरो संसारको सबैभन्दा सुन्दर दृश्य हो।<br>
+        तिम्रो आवाज मेरो मनको सबैभन्दा मधुर संगीत हो।<br>
+        तिम्रो माया मेरो जीवनको सबैभन्दा ठूलो उपहार हो।<br>
+        <em>— सधैं तिम्रो, Utsav 💖</em>
+      </p>
+      <div class="hero-stats">
+        <div class="stat-card glass-card">
+          <div class="stat-icon">💋</div>
+          <div class="stat-num" id="totalKisses">0</div>
+          <div class="stat-label">Kisses Sent</div>
+        </div>
+        <div class="stat-card glass-card">
+          <div class="stat-icon">❤️</div>
+          <div class="stat-num" id="totalHearts">0</div>
+          <div class="stat-label">Hearts Given</div>
+        </div>
+        <div class="stat-card glass-card">
+          <div class="stat-icon">🌹</div>
+          <div class="stat-num" id="daysCount">0</div>
+          <div class="stat-label">Days of Love</div>
+        </div>
+        <div class="stat-card glass-card">
+          <div class="stat-icon">✨</div>
+          <div class="stat-num" id="lovePoints">0</div>
+          <div class="stat-label">Love Points</div>
+        </div>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="rotating-heart-outer">
+        <div class="rotating-heart-inner">
+          <div class="big-heart-display">💖</div>
+          <div class="orbit-dot d1">💕</div>
+          <div class="orbit-dot d2">🌸</div>
+          <div class="orbit-dot d3">✨</div>
+          <div class="orbit-dot d4">💫</div>
+        </div>
+      </div>
     </div>
   </section>
 
-  <!-- MUSIC PLAYER (now REAL playable songs) -->
+
+  <!-- ========== LIVE LOVE TIMER ========== -->
+  <section class="section" id="timerSection">
+    <div class="section-header">
+      <span class="section-icon">⏱️</span>
+      <h2>We've Been Us Since...</h2>
+      <p class="section-sub">Every second counts — and every one has been precious 💕</p>
+    </div>
+    <div class="glass-card timer-card">
+      <div class="timer-start-date">💬 December 10, 2024 — The day everything began</div>
+      <div class="timer-grid">
+        <div class="timer-unit"><div class="timer-num" id="tDays">0</div><div class="timer-label">Days</div></div>
+        <div class="timer-sep">:</div>
+        <div class="timer-unit"><div class="timer-num" id="tHours">00</div><div class="timer-label">Hours</div></div>
+        <div class="timer-sep">:</div>
+        <div class="timer-unit"><div class="timer-num" id="tMins">00</div><div class="timer-label">Minutes</div></div>
+        <div class="timer-sep">:</div>
+        <div class="timer-unit highlight"><div class="timer-num" id="tSecs">00</div><div class="timer-label">Seconds</div></div>
+      </div>
+      <div class="timer-total">Total seconds of love: <span id="tTotalSecs" class="timer-total-num">0</span> 💖</div>
+      <div class="timer-message" id="timerMessage"></div>
+    </div>
+  </section>
+
+  <!-- ========== LOVE LETTER ========== -->
+  <section class="section" id="letterSection">
+    <div class="section-header">
+      <span class="section-icon">💌</span>
+      <h2>A Letter From My Heart</h2>
+    </div>
+    <div class="glass-card letter-card">
+      <div class="letter-lines">
+        <p>मेरी प्यारी Ankita,</p>
+        <p>हर रोज़ जब मैं तुम्हारे बारे में सोचता हूँ, मेरे दिल में एक अजीब सी खुशी भर जाती है। तुम सिर्फ मेरी girlfriend नहीं हो — तुम मेरी सबसे अच्छी दोस्त हो, मेरी हमसफर हो।</p>
+        <p>तुम्हारी हँसी सुनकर मेरा दिन बन जाता है। तुम्हारी आँखों में जो चमक है, वो मुझे रात के सबसे चमकीले तारे से भी ज़्यादा प्यारी लगती है।</p>
+        <p>जब तुम "Kanchi" बोलती हो, तो मुझे लगता है दुनिया में सब कुछ सही है। जब तुम उदास होती हो, तो मैं बस यही चाहता हूँ कि सारी तकलीफें मैं उठा लूँ।</p>
+        <p>मेरा वादा है — आज, कल, और सदा तुम्हारे साथ हूँ। हर मुस्कान में, हर आँसू में, हर पल में।</p>
+        <p>तुम्हारा हमेशा,<br><em class="signature">Utsav 💕</em></p>
+      </div>
+      <div class="letter-seal">💝</div>
+    </div>
+  </section>
+
+  <!-- ========== MAZE GAME ========== -->
+  <section class="section" id="mazeSection">
+    <div class="section-header">
+      <span class="section-icon">🧩</span>
+      <h2>Maze of Love</h2>
+      <p class="section-sub">Find your way to the heart ❤️</p>
+    </div>
+    <div class="glass-card game-card">
+      <div class="maze-wrapper">
+        <canvas id="mazeCanvas" width="320" height="320"></canvas>
+        <div id="mazeOverlay" class="maze-overlay hidden">
+          <div class="overlay-content">
+            <div class="overlay-emoji">💖</div>
+            <div class="overlay-text">You Found My Heart!</div>
+            <button class="glass-btn small" id="mazeReplayBtn">Play Again 💕</button>
+          </div>
+        </div>
+      </div>
+      <div class="maze-controls">
+        <div class="dpad">
+          <button class="dpad-btn top" id="mUp">⬆</button>
+          <button class="dpad-btn left" id="mLeft">⬅</button>
+          <button class="dpad-btn center">💗</button>
+          <button class="dpad-btn right" id="mRight">➡</button>
+          <button class="dpad-btn bottom" id="mDown">⬇</button>
+        </div>
+      </div>
+      <div class="maze-info">
+        <span id="mazeMoves">Moves: 0</span>
+        <span id="mazeTime">Time: 0s</span>
+        <button class="glass-btn small" id="resetMazeBtn">Reset ↺</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== MEMORY GAME ========== -->
+  <section class="section" id="memorySection">
+    <div class="section-header">
+      <span class="section-icon">💑</span>
+      <h2>Memory of Us</h2>
+      <p class="section-sub">Match the pairs — just like we match perfectly 💞</p>
+    </div>
+    <div class="glass-card game-card">
+      <div class="memory-stats">
+        <span>Pairs: <b id="memPairs">0</b>/8</span>
+        <span>Moves: <b id="memMoves">0</b></span>
+        <span>Time: <b id="memTime">0s</b></span>
+      </div>
+      <div id="memoryGrid" class="memory-grid"></div>
+      <button class="glass-btn small" id="resetMemoryBtn">New Game 🔄</button>
+    </div>
+  </section>
+
+  <!-- ========== CATCH ME GAME ========== -->
   <section class="section">
-    <div class="section-header"><span class="section-icon">🎵</span><h2>Our Playlist • Tap any song</h2></div>
+    <div class="section-header">
+      <span class="section-icon">🏃</span>
+      <h2>Catch My Kiss!</h2>
+      <p class="section-sub">Can you catch it? 😘</p>
+    </div>
+    <div class="glass-card game-card" id="catchArea">
+      <div id="catchStats">Caught: <b id="caughtCount">0</b> | Missed: <b id="missedCount">0</b> | Score: <b id="catchScore">0</b></div>
+      <div id="catchZone"></div>
+      <div class="catch-controls">
+        <button class="glass-btn small" id="startCatch">Start Game 💋</button>
+        <button class="glass-btn small" id="stopCatch">Stop 🛑</button>
+      </div>
+      <div id="catchMsg" class="game-msg"></div>
+    </div>
+  </section>
+
+  <!-- ========== SNAKE GAME ========== -->
+  <section class="section">
+    <div class="section-header">
+      <span class="section-icon">🐍</span>
+      <h2>Love Snake</h2>
+      <p class="section-sub">Eat the hearts to grow your love 💕</p>
+    </div>
+    <div class="glass-card game-card">
+      <div class="snake-info">
+        <span>Score: <b id="snakeScore">0</b></span>
+        <span>High: <b id="snakeHigh">0</b></span>
+        <span>Level: <b id="snakeLevel">1</b></span>
+      </div>
+      <canvas id="snakeCanvas" width="320" height="320"></canvas>
+      <div class="snake-controls">
+        <div class="dpad">
+          <button class="dpad-btn top" id="sUp">⬆</button>
+          <button class="dpad-btn left" id="sLeft">⬅</button>
+          <button class="dpad-btn center">💚</button>
+          <button class="dpad-btn right" id="sRight">➡</button>
+          <button class="dpad-btn bottom" id="sDown">⬇</button>
+        </div>
+      </div>
+      <button class="glass-btn small" id="startSnake">Start Snake 🐍</button>
+    </div>
+  </section>
+
+  <!-- ========== QUIZ ========== -->
+  <section class="section">
+    <div class="section-header">
+      <span class="section-icon">❓</span>
+      <h2>How Well Do You Know Us?</h2>
+    </div>
+    <div class="glass-card game-card" id="quizCard">
+      <div id="quizProgress" class="quiz-progress"><div id="quizBar" class="quiz-bar"></div></div>
+      <div id="quizQuestion" class="quiz-question"></div>
+      <div id="quizOptions" class="quiz-options"></div>
+      <div id="quizFeedback" class="quiz-feedback hidden"></div>
+      <div id="quizResult" class="quiz-result hidden"></div>
+    </div>
+  </section>
+
+  <!-- ========== FORTUNE TELLER ========== -->
+  <section class="section">
+    <div class="section-header">
+      <span class="section-icon">🔮</span>
+      <h2>Love Fortune Teller</h2>
+    </div>
+    <div class="glass-card fortune-card">
+      <div class="crystal-ball" id="crystalBall">
+        <div class="crystal-inner">
+          <div class="crystal-glow"></div>
+          <span class="crystal-icon">🔮</span>
+        </div>
+      </div>
+      <p class="fortune-hint">Tap the crystal ball for your fortune...</p>
+      <div id="fortuneText" class="fortune-text hidden"></div>
+    </div>
+  </section>
+
+  <!-- ========== KISS COUNTER ========== -->
+  <section class="section">
+    <div class="section-header">
+      <span class="section-icon">💋</span>
+      <h2>Virtual Kiss Counter</h2>
+    </div>
+    <div class="glass-card kiss-card">
+      <div class="kiss-display">
+        <div id="kissAnim" class="kiss-anim">💋</div>
+        <div id="kissNumber" class="kiss-number">0</div>
+        <div class="kiss-label">kisses given</div>
+      </div>
+      <div class="streak-display">
+        🔥 Streak: <span id="kissStreak">0</span>
+      </div>
+      <button id="kissBtn" class="glass-btn primary kiss-btn">Send a Kiss 💋</button>
+      <button id="superKissBtn" class="glass-btn super-kiss">💋 SUPER KISS 💋 (×10)</button>
+    </div>
+  </section>
+
+  <!-- ========== LOVE CLICKER ========== -->
+  <section class="section">
+    <div class="section-header">
+      <span class="section-icon">❤️</span>
+      <h2>Love Clicker</h2>
+      <p class="section-sub">Click to earn love points!</p>
+    </div>
+    <div class="glass-card clicker-card">
+      <div id="clickerHeart" class="clicker-heart">💖</div>
+      <div class="clicker-pts">Love Points: <span id="clickerPoints">0</span></div>
+      <div class="clicker-rate">+<span id="clickerRate">0</span>/sec auto</div>
+      <div class="upgrades-grid">
+        <button class="upgrade-btn glass-btn small" data-cost="50" data-rate="1" id="upg1">
+          💌 Auto Kisses<br><small>50 pts — +1/sec</small>
+        </button>
+        <button class="upgrade-btn glass-btn small" data-cost="200" data-rate="5" id="upg2">
+          🌹 Rose Garden<br><small>200 pts — +5/sec</small>
+        </button>
+        <button class="upgrade-btn glass-btn small" data-cost="1000" data-rate="20" id="upg3">
+          💍 Ring of Love<br><small>1000 pts — +20/sec</small>
+        </button>
+        <button class="upgrade-btn glass-btn small" data-cost="5000" data-rate="100" id="upg4">
+          🌟 Star Named Ankita<br><small>5000 pts — +100/sec</small>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== LOVE LETTER GENERATOR ========== -->
+  <section class="section">
+    <div class="section-header">
+      <span class="section-icon">✍️</span>
+      <h2>AI Love Letter Generator</h2>
+    </div>
+    <div class="glass-card">
+      <div class="letter-gen-options">
+        <label>Mood:</label>
+        <div class="mood-btns">
+          <button class="mood-btn active" data-mood="romantic">🌹 Romantic</button>
+          <button class="mood-btn" data-mood="playful">😜 Playful</button>
+          <button class="mood-btn" data-mood="deep">💭 Deep</button>
+          <button class="mood-btn" data-mood="nepali">🇳🇵 Nepali</button>
+          <button class="mood-btn" data-mood="hindi">🇮🇳 Hindi</button>
+        </div>
+      </div>
+      <textarea id="letterSeed" placeholder="Type a word or feeling to inspire the letter... (or leave blank)" rows="2"></textarea>
+      <button class="glass-btn primary" id="genLetterBtn">Generate My Love Letter 💌</button>
+      <div id="generatedLetterOutput" class="generated-letter hidden"></div>
+      <button class="glass-btn small hidden" id="copyLetterBtn">📋 Copy Letter</button>
+    </div>
+  </section>
+
+  <!-- ========== PHOTO GALLERY ========== -->
+  <section class="section">
+    <div class="section-header">
+      <span class="section-icon">📸</span>
+      <h2>Our Memory Gallery</h2>
+    </div>
+    <div class="glass-card gallery-card">
+      <div class="gallery-upload">
+        <label for="photoUpload" class="glass-btn small upload-label">📎 Add Our Photos</label>
+        <input type="file" id="photoUpload" multiple accept="image/*" style="display:none">
+        <p class="gallery-hint">Upload your favorite memories together 💕</p>
+      </div>
+      <div id="photoGallery" class="photo-gallery">
+        <div class="gallery-placeholder">
+          <div class="placeholder-icon">🖼️</div>
+          <p>Your beautiful memories will appear here</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== LOVE TIMELINE ========== -->
+  <section class="section">
+    <div class="section-header">
+      <span class="section-icon">📅</span>
+      <h2>Our Love Story Timeline</h2>
+    </div>
+    <div class="glass-card">
+      <div class="timeline">
+        <div class="timeline-item left">
+          <div class="timeline-dot">💬</div>
+          <div class="timeline-content glass-card">
+            <div class="timeline-date">The Beginning</div>
+            <div class="timeline-title">First Hello</div>
+            <p>The moment everything changed — when I first saw you at Iskcon, I knew there was something special about you.</p>
+          </div>
+        </div>
+        <div class="timeline-item right">
+          <div class="timeline-dot">💕</div>
+          <div class="timeline-content glass-card">
+            <div class="timeline-date">Getting Closer</div>
+            <div class="timeline-title">Becoming Inseparable</div>
+            <p>Every conversation made me fall harder. Every laugh made me want to hear it forever.</p>
+          </div>
+        </div>
+        <div class="timeline-item left">
+          <div class="timeline-dot">❤️</div>
+          <div class="timeline-content glass-card">
+            <div class="timeline-date">The Confession</div>
+            <div class="timeline-title">I Love You</div>
+            <p>The three words that changed everything. And you said yes. Best day of my life.</p>
+          </div>
+        </div>
+        <div class="timeline-item right">
+          <div class="timeline-dot">🌟</div>
+          <div class="timeline-content glass-card">
+            <div class="timeline-date">Now & Forever</div>
+            <div class="timeline-title">Us</div>
+            <p>Every day with you is a new chapter of the most beautiful story I've ever lived.</p>
+          </div>
+        </div>
+        <div class="timeline-item left future">
+          <div class="timeline-dot">💍</div>
+          <div class="timeline-content glass-card">
+            <div class="timeline-date">Coming Soon...</div>
+            <div class="timeline-title">Forever & Always 🤫</div>
+            <p>The best chapters of our story are still being written... ✍️💕</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== REASONS I LOVE YOU ========== -->
+  <section class="section">
+    <div class="section-header">
+      <span class="section-icon">🌸</span>
+      <h2>100 Reasons I Love You</h2>
+      <p class="section-sub">Tap each petal to reveal a reason 🌸</p>
+    </div>
+    <div class="glass-card reasons-card">
+      <div id="reasonsGrid" class="reasons-grid"></div>
+      <div id="reasonModal" class="reason-modal hidden">
+        <div class="reason-modal-inner glass-card">
+          <div class="reason-num" id="reasonNum"></div>
+          <div class="reason-text" id="reasonText"></div>
+          <button class="glass-btn small" id="closeReason">Close 💕</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== PROMISE WALL ========== -->
+  <section class="section">
+    <div class="section-header">
+      <span class="section-icon">🤝</span>
+      <h2>My Promises to You</h2>
+    </div>
+    <div class="promises-grid">
+      <div class="promise-card glass-card" data-delay="0">
+        <div class="promise-icon">🛡️</div>
+        <h3>I will always protect you</h3>
+        <p>From every storm, every tear, every hurt — I will stand by you.</p>
+      </div>
+      <div class="promise-card glass-card" data-delay="100">
+        <div class="promise-icon">👂</div>
+        <h3>I will always listen</h3>
+        <p>Your thoughts, your dreams, your fears — I am here for all of it.</p>
+      </div>
+      <div class="promise-card glass-card" data-delay="200">
+        <div class="promise-icon">😂</div>
+        <h3>I will make you laugh</h3>
+        <p>Even on the worst days, I'll find a way to bring back your smile.</p>
+      </div>
+      <div class="promise-card glass-card" data-delay="300">
+        <div class="promise-icon">🌱</div>
+        <h3>I will help you grow</h3>
+        <p>Your dreams are my dreams. Your success is my happiness.</p>
+      </div>
+      <div class="promise-card glass-card" data-delay="400">
+        <div class="promise-icon">🤗</div>
+        <h3>I will hug you tight</h3>
+        <p>Every time you need it, even when you don't ask for it.</p>
+      </div>
+      <div class="promise-card glass-card" data-delay="500">
+        <div class="promise-icon">💞</div>
+        <h3>I will love you endlessly</h3>
+        <p>Today, tomorrow, and in every life after this one.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== MUSIC PLAYER ========== -->
+  <section class="section">
+    <div class="section-header">
+      <span class="section-icon">🎵</span>
+      <h2>Our Playlist</h2>
+    </div>
     <div class="glass-card music-card">
       <div class="now-playing">
-        <div class="vinyl" id="vinyl"><div class="vinyl-inner">🎵</div></div>
+        <div class="vinyl" id="vinyl">
+          <div class="vinyl-inner">🎵</div>
+        </div>
         <div class="track-info">
           <div id="trackName" class="track-name">Select a song...</div>
           <div id="trackArtist" class="track-artist"></div>
@@ -114,68 +504,36 @@
       <div class="playlist-items" id="playlistItems"></div>
     </div>
   </section>
-  <!-- rest of your sections unchanged -->
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="footer-hearts" id="footerHearts"></div>
+    <div class="footer-text">
+      <p class="footer-main">Made with every bit of love I have 💖</p>
+      <p class="footer-sub">From Utsav, to Ankita — forever and always</p>
+      <p class="footer-nepali">तिमीलाई माया गर्छु, Kanchi ♾️</p>
+    </div>
+    <div class="footer-icons">💖 💕 💗 💘 💝 💞 💓 💟</div>
+  </footer>
+
+</div><!-- end mainApp -->
+
+<!-- Floating heart spawner on click -->
+<div id="floatHearts"></div>
+
+<!-- Notification Toast -->
+<div id="toastContainer"></div>
+
+<!-- Full screen win modal -->
+<div id="winModal" class="win-modal hidden">
+  <div class="win-inner glass-card">
+    <div class="win-emoji" id="winEmoji">🎉</div>
+    <div class="win-title" id="winTitle">You Won!</div>
+    <div class="win-sub" id="winSub"></div>
+    <button class="glass-btn primary" id="winClose">Yay! 💕</button>
+  </div>
 </div>
 
-<audio id="musicPlayer" preload="metadata"></audio>
-<div id="floatHearts"></div>
-<div id="toastContainer"></div>
-<div id="winModal" class="win-modal hidden"> <!-- your win modal --> </div>
-
-<style>
-/* ==================== FIXED FULL CSS (your original + all fixes) ==================== */
-*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
-:root {
-  --pink1: #ff4d8d; --pink2: #ff8fb1; --pink3: #ffb3c6; --pink4: #ffd6e7; --pink5: #fff0f6;
-  --deep: #c9184a; --gold: #ffd700; --purple: #d4a3e3;
-  --glass-bg: rgba(255,255,255,0.18); --glass-bg-dark: rgba(255,255,255,0.10);
-  --glass-border: rgba(255,255,255,0.45); --glass-shadow: 0 20px 60px rgba(255,77,141,0.25);
-  --glass-blur: blur(22px); --text: #3a0a1f; --text-soft: #7a3050; --text-muted: rgba(58,10,31,0.55);
-  --radius: 28px; --radius-sm: 16px;
-  --font-display: 'Dancing Script', cursive; --font-body: 'Poppins', sans-serif; --font-serif: 'Playfair Display', serif;
-  --transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275); --header-h: 70px;
-}
-.dark-mode {
-  --glass-bg: rgba(30,0,20,0.38); --glass-bg-dark: rgba(20,0,15,0.55);
-  --glass-border: rgba(255,150,200,0.18); --glass-shadow: 0 20px 60px rgba(255,77,141,0.18);
-  --text: #ffe0ee; --text-soft: #ffb3c6; --text-muted: rgba(255,200,220,0.6); --pink5: #1a0010;
-}
-
-body { font-family: var(--font-body); color: var(--text); min-height: 100vh;
-  background: linear-gradient(135deg, #ff758c 0%, #ffb3c6 25%, #ffd6e7 50%, #e8b4d0 75%, #ff758c 100%);
-  background-size: 400% 400%; animation: bgShift 12s ease infinite; overflow-x: hidden;
-  cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><text y='22' font-size='22'>💖</text></svg>") 12 12, auto; }
-.dark-mode body, body.dark-mode { background: linear-gradient(135deg, #2d0020 0%, #4a0030 25%, #1a0015 50%, #3a0025 75%, #2d0020 100%); }
-@keyframes bgShift { 0% {background-position:0% 50%} 50% {background-position:100% 50%} 100% {background-position:0% 50%} }
-
-#trailCanvas { position:fixed; inset:0; pointer-events:none; z-index:0; opacity:0.7; }
-#particles { position:fixed; inset:0; pointer-events:none; z-index:1; overflow:hidden; }
-.particle { position:absolute; font-size:18px; pointer-events:none; animation:floatUp linear forwards; opacity:0.6; }
-@keyframes floatUp { 0%{transform:translateY(0) rotate(0deg) scale(1); opacity:0.7} 100%{transform:translateY(-110vh) rotate(720deg) scale(0.3); opacity:0} }
-
-.big-heart-display, .orbit-dot, .kiss-anim, .reason-petal, .catch-target { filter: drop-shadow(0 4px 12px rgba(255,45,85,0.45)); }
-
-/* Games: compact card + full canvas (380px) */
-.game-card { max-width:420px; margin:20px auto; padding:16px; }
-canvas { width:100% !important; height:auto !important; max-height:380px; border-radius:20px; box-shadow:0 10px 30px rgba(0,0,0,0.3); image-rendering:crisp-edges; }
-.maze-wrapper { width:380px !important; height:380px !important; margin:0 auto 20px; }
-#snakeCanvas, #mazeCanvas { width:380px; height:380px; }
-
-/* Vinyl + playlist + photo gallery */
-.vinyl.playing .vinyl-inner { animation:vinylSpin 1.8s linear infinite; }
-@keyframes vinylSpin { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
-.playlist-items { max-height:320px; overflow-y:auto; }
-.playlist-item { display:flex; justify-content:space-between; align-items:center; padding:14px 16px; margin:4px 0; border-radius:12px; background:rgba(255,255,255,0.08); cursor:pointer; transition:all .2s; }
-.playlist-item:hover { background:rgba(255,255,255,0.18); transform:translateX(6px); }
-.playlist-item.active { background:rgba(255,77,141,0.25) !important; border-color:var(--pink1); }
-.photo-gallery { display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:12px; }
-.photo-gallery img { width:100%; border-radius:16px; object-fit:cover; aspect-ratio:1/1; box-shadow:0 6px 20px rgba(0,0,0,0.25); transition:transform .3s; }
-.photo-gallery img:hover { transform:scale(1.06); }
-
-/* All your original classes (glass-card, hero, timer, letter, maze, memory, kiss, clicker, reasons, music, footer, etc.) are kept 100% intact */
-.glass-card, .glass-btn { background: var(--glass-bg); backdrop-filter: var(--glass-blur); border: 1.5px solid var(--glass-border); box-shadow: var(--glass-shadow); }
-.glass-btn.primary { background: linear-gradient(135deg, var(--pink1), var(--deep)); color: white; }
-/* ... every single rule from your first message is here ... (I didn't delete anything) */
-</style>
+<script src="script.js"></script>
 </body>
 </html>
