@@ -2,20 +2,36 @@
   'use strict';
 
   // =====================================================
-  // AUDIO ENGINE (Web Audio API - no external files needed)
+  // FIREBASE INITIALIZATION (replace with your config)
+  // =====================================================
+  const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_PROJECT.firebaseapp.com",
+    databaseURL: "https://YOUR_PROJECT-default-rtdb.firebaseio.com",
+    projectId: "YOUR_PROJECT",
+    storageBucket: "YOUR_PROJECT.appspot.com",
+    messagingSenderId: "YOUR_SENDER_ID",
+    appId: "YOUR_APP_ID"
+  };
+
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  const database = firebase.database();
+  const storage = firebase.storage();
+
+  // =====================================================
+  // AUDIO ENGINE (same as before)
   // =====================================================
   const AudioEngine = (function () {
     let ctx = null;
-
     function init() {
       if (!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)();
       if (ctx.state === 'suspended') ctx.resume();
     }
-
     function playTone(freq, type = 'sine', duration = 0.15, vol = 0.3, delay = 0) {
       try {
         init();
-        const osc  = ctx.createOscillator();
+        const osc = ctx.createOscillator();
         const gain = ctx.createGain();
         osc.connect(gain);
         gain.connect(ctx.destination);
@@ -27,12 +43,9 @@
         osc.stop(ctx.currentTime + delay + duration + 0.01);
       } catch (e) {}
     }
-
     function chord(freqs, duration = 0.3, vol = 0.2) {
       freqs.forEach((f, i) => playTone(f, 'sine', duration, vol, i * 0.04));
     }
-
-    // Named sound effects
     const sfx = {
       click()    { playTone(880, 'sine', 0.08, 0.25); },
       kiss()     { chord([523, 659, 784], 0.5, 0.2); playTone(1047, 'sine', 0.4, 0.15, 0.3); },
@@ -50,13 +63,10 @@
       snakeDie() { [440,330,220,110].forEach((f,i)=>playTone(f,'sawtooth',0.2,0.25,i*0.1)); },
       catch()    { chord([784,988], 0.2, 0.25); },
     };
-
-    // Ambient love melody
     let bgInterval = null;
     const melody = [523,659,784,659,880,784,659,523,587,740,880,740];
     let mIdx = 0;
     let bgEnabled = false;
-
     function startBgMusic() {
       bgEnabled = true;
       if (bgInterval) return;
@@ -66,16 +76,8 @@
         mIdx++;
       }, 600);
     }
-
-    function stopBgMusic() {
-      bgEnabled = false;
-    }
-
-    function toggleBgMusic() {
-      bgEnabled ? stopBgMusic() : startBgMusic();
-      return bgEnabled;
-    }
-
+    function stopBgMusic() { bgEnabled = false; }
+    function toggleBgMusic() { bgEnabled ? stopBgMusic() : startBgMusic(); return bgEnabled; }
     return { sfx, startBgMusic, stopBgMusic, toggleBgMusic, init };
   })();
 
@@ -109,7 +111,7 @@
   }
 
   // =====================================================
-  // GLOBAL STATE
+  // GLOBAL STATE (per user, stored in localStorage)
   // =====================================================
   const state = {
     kisses: parseInt(localStorage.getItem('kisses') || '0'),
@@ -141,26 +143,19 @@
   }
 
   // =====================================================
-  // CURSOR TRAIL
+  // CURSOR TRAIL (unchanged)
   // =====================================================
   function initTrail() {
     const canvas = $('trailCanvas');
     const ctx = canvas.getContext('2d');
     const points = [];
-
-    function resize() {
-      canvas.width  = window.innerWidth;
-      canvas.height = window.innerHeight;
-    }
-
+    function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
     resize();
     window.addEventListener('resize', resize);
-
     document.addEventListener('mousemove', e => {
       points.push({ x: e.clientX, y: e.clientY, age: 0, emoji: Math.random() < 0.3 ? '💕' : null });
       if (points.length > 35) points.shift();
     });
-
     function draw() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       points.forEach((p, i) => {
@@ -186,12 +181,11 @@
   }
 
   // =====================================================
-  // PARTICLES
+  // PARTICLES (unchanged)
   // =====================================================
   function initParticles() {
     const container = $('particles');
     const emojis = ['💕','💖','💗','💘','💝','🌸','✨','🌹','💫','🦋'];
-
     function spawn() {
       const p = el('div', 'particle', emojis[Math.floor(Math.random() * emojis.length)]);
       const size = Math.random() * 18 + 10;
@@ -201,41 +195,32 @@
       container.appendChild(p);
       setTimeout(() => p.remove(), dur * 1000);
     }
-
     setInterval(spawn, 800);
   }
 
   // =====================================================
-  // BURST (floating hearts on click)
+  // BURST (unchanged)
   // =====================================================
   function burst(count = 15, x = null, y = null) {
     const cx = x || window.innerWidth / 2;
     const cy = y || window.innerHeight / 2;
     const container = $('floatHearts');
     const emojis = ['💖','💕','💗','💘','💝','💞','💓','✨','🌸','🌹'];
-
     for (let i = 0; i < count; i++) {
       const h = el('div', 'float-heart', emojis[Math.floor(Math.random() * emojis.length)]);
       const ox = (Math.random() - 0.5) * 160;
       const oy = Math.random() * 80 + 40;
-      h.style.cssText = `left:${cx + ox}px; top:${cy}px; font-size:${Math.random()*22+14}px;
-        animation-duration:${Math.random()*1+1.5}s;
-        --tx:${ox}px; --ty:${-oy - 80}px;`;
+      h.style.cssText = `left:${cx + ox}px; top:${cy}px; font-size:${Math.random()*22+14}px; animation-duration:${Math.random()*1+1.5}s; --tx:${ox}px; --ty:${-oy - 80}px;`;
       h.style.setProperty('--tx', ox + 'px');
       h.style.setProperty('--ty', (-oy - 80) + 'px');
       container.appendChild(h);
       setTimeout(() => h.remove(), 3000);
     }
   }
-
-  document.addEventListener('click', e => {
-    if (e.target.tagName !== 'CANVAS') {
-      burst(8, e.clientX, e.clientY);
-    }
-  });
+  document.addEventListener('click', e => { if (e.target.tagName !== 'CANVAS') burst(8, e.clientX, e.clientY); });
 
   // =====================================================
-  // WELCOME SCREEN
+  // WELCOME SCREEN (unchanged)
   // =====================================================
   function initWelcome() {
     $('startBtn').addEventListener('click', () => {
@@ -245,7 +230,6 @@
       AudioEngine.sfx.win();
       setTimeout(() => AudioEngine.startBgMusic(), 600);
       state.musicOn = true;
-
       setTimeout(() => {
         $('welcomeScreen').remove();
         initScrollReveal();
@@ -254,7 +238,7 @@
   }
 
   // =====================================================
-  // MUSIC TOGGLE
+  // MUSIC TOGGLE (unchanged)
   // =====================================================
   function initMusicToggle() {
     $('musicToggle').addEventListener('click', () => {
@@ -266,7 +250,7 @@
   }
 
   // =====================================================
-  // DARK MODE
+  // DARK MODE (unchanged)
   // =====================================================
   function initThemeToggle() {
     $('themeToggle').addEventListener('click', () => {
@@ -277,81 +261,67 @@
   }
 
   // =====================================================
-  // WIN MODAL CLOSE
+  // WIN MODAL CLOSE (unchanged)
   // =====================================================
   $('winClose').addEventListener('click', () => {
     $('winModal').classList.add('hidden');
   });
 
   // =====================================================
-  // SCROLL REVEAL
+  // SCROLL REVEAL (unchanged)
   // =====================================================
   function initScrollReveal() {
-    const sections  = document.querySelectorAll('.section');
-    const promises  = document.querySelectorAll('.promise-card');
-
+    const sections = document.querySelectorAll('.section');
+    const promises = document.querySelectorAll('.promise-card');
     const io = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           entry.target.classList.add('visible');
           const delay = entry.target.dataset.delay;
-          if (delay) {
-            entry.target.style.transitionDelay = delay + 'ms';
-          }
+          if (delay) entry.target.style.transitionDelay = delay + 'ms';
         }
       });
     }, { threshold: 0.1 });
-
     sections.forEach(s => io.observe(s));
     promises.forEach(p => io.observe(p));
   }
 
   // =====================================================
-  // MAZE GAME
+  // MAZE GAME (unchanged)
   // =====================================================
   function initMaze() {
     const canvas = $('mazeCanvas');
-    const ctx    = canvas.getContext('2d');
-    const CELL   = 40;
-    const COLS   = 8;
-    const ROWS   = 8;
-
+    const ctx = canvas.getContext('2d');
+    const CELL = 40;
+    const COLS = 8, ROWS = 8;
     function generateMaze(cols, rows) {
       const grid = Array.from({ length: rows }, (_, r) =>
-        Array.from({ length: cols }, (_, c) => ({
-          r, c,
-          walls: { top: true, right: true, bottom: true, left: true },
-          visited: false
-        }))
+        Array.from({ length: cols }, (_, c) => ({ r, c, walls: { top: true, right: true, bottom: true, left: true }, visited: false }))
       );
-
       function neighbors(r, c) {
         const ns = [];
-        if (r > 0)        ns.push(grid[r-1][c]);
-        if (r < rows-1)   ns.push(grid[r+1][c]);
-        if (c > 0)        ns.push(grid[r][c-1]);
-        if (c < cols-1)   ns.push(grid[r][c+1]);
+        if (r > 0) ns.push(grid[r-1][c]);
+        if (r < rows-1) ns.push(grid[r+1][c]);
+        if (c > 0) ns.push(grid[r][c-1]);
+        if (c < cols-1) ns.push(grid[r][c+1]);
         return ns.filter(n => !n.visited);
       }
-
       function removeWall(a, b) {
         if (a.r === b.r) {
           if (a.c < b.c) { a.walls.right = false; b.walls.left = false; }
-          else           { a.walls.left = false; b.walls.right = false; }
+          else { a.walls.left = false; b.walls.right = false; }
         } else {
           if (a.r < b.r) { a.walls.bottom = false; b.walls.top = false; }
-          else           { a.walls.top = false; b.walls.bottom = false; }
+          else { a.walls.top = false; b.walls.bottom = false; }
         }
       }
-
       const stack = [];
       const start = grid[0][0];
       start.visited = true;
       stack.push(start);
-
       while (stack.length) {
         const cur = stack[stack.length - 1];
-        const ns  = neighbors(cur.r, cur.c);
+        const ns = neighbors(cur.r, cur.c);
         if (ns.length) {
           const next = ns[Math.floor(Math.random() * ns.length)];
           removeWall(cur, next);
@@ -361,31 +331,22 @@
           stack.pop();
         }
       }
-
       return grid;
     }
-
     let grid = generateMaze(COLS, ROWS);
     let player = { r: 0, c: 0 };
     let moves = 0, elapsed = 0, timerInterval = null;
-
     function startTimer() {
       clearInterval(timerInterval);
-      timerInterval = setInterval(() => {
-        elapsed++;
-        $('mazeTime').textContent = 'Time: ' + elapsed + 's';
-      }, 1000);
+      timerInterval = setInterval(() => { elapsed++; $('mazeTime').textContent = 'Time: ' + elapsed + 's'; }, 1000);
     }
-
     function drawMaze() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-
       const bg = ctx.createLinearGradient(0,0,canvas.width,canvas.height);
       bg.addColorStop(0, 'rgba(255,240,246,0.6)');
       bg.addColorStop(1, 'rgba(255,182,193,0.4)');
       ctx.fillStyle = bg;
       ctx.fillRect(0,0,canvas.width,canvas.height);
-
       ctx.save();
       const gx = (COLS-1)*CELL+CELL/2, gy = (ROWS-1)*CELL+CELL/2;
       const grd = ctx.createRadialGradient(gx,gy,2,gx,gy,CELL);
@@ -394,11 +355,9 @@
       ctx.fillStyle = grd;
       ctx.fillRect(0,0,canvas.width,canvas.height);
       ctx.restore();
-
       ctx.strokeStyle = 'rgba(201,24,74,0.8)';
       ctx.lineWidth = 2.5;
       ctx.lineCap = 'round';
-
       for (let r = 0; r < ROWS; r++) {
         for (let c = 0; c < COLS; c++) {
           const cell = grid[r][c];
@@ -409,12 +368,10 @@
           if (cell.walls.left)   { ctx.beginPath(); ctx.moveTo(x,y); ctx.lineTo(x,y+CELL); ctx.stroke(); }
         }
       }
-
       ctx.font = `${CELL*0.7}px "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif`;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       ctx.fillText('💖', (COLS-1)*CELL+CELL/2, (ROWS-1)*CELL+CELL/2);
-
       const px = player.c*CELL+CELL/2, py = player.r*CELL+CELL/2;
       const grad = ctx.createRadialGradient(px,py,2,px,py,CELL*0.38);
       grad.addColorStop(0,'#ff4d8d');
@@ -426,11 +383,7 @@
       ctx.font = `${CELL*0.5}px "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif`;
       ctx.fillText('💗', px, py+2);
     }
-
-    function canMove(r, c, dir) {
-      return !grid[r][c].walls[dir];
-    }
-
+    function canMove(r, c, dir) { return !grid[r][c].walls[dir]; }
     function move(dr, dc, dir) {
       const nr = player.r + dr, nc = player.c + dc;
       if (nr < 0 || nr >= ROWS || nc < 0 || nc >= COLS) return;
@@ -440,7 +393,6 @@
       $('mazeMoves').textContent = 'Moves: ' + moves;
       AudioEngine.sfx.mazeMove();
       drawMaze();
-
       if (player.r === ROWS-1 && player.c === COLS-1) {
         clearInterval(timerInterval);
         setTimeout(() => {
@@ -451,17 +403,14 @@
         }, 200);
       }
     }
-
     $('mUp').addEventListener('click',    () => move(-1, 0, 'top'));
     $('mDown').addEventListener('click',  () => move(1, 0, 'bottom'));
     $('mLeft').addEventListener('click',  () => move(0, -1, 'left'));
     $('mRight').addEventListener('click', () => move(0, 1, 'right'));
-
     document.addEventListener('keydown', e => {
       const map = { ArrowUp:['top',-1,0], ArrowDown:['bottom',1,0], ArrowLeft:['left',0,-1], ArrowRight:['right',0,1] };
       if (map[e.key]) { e.preventDefault(); move(map[e.key][1], map[e.key][2], map[e.key][0]); }
     });
-
     function resetMaze() {
       grid = generateMaze(COLS, ROWS);
       player = { r:0, c:0 };
@@ -473,21 +422,18 @@
       startTimer();
       drawMaze();
     }
-
     $('resetMazeBtn').addEventListener('click', resetMaze);
     $('mazeReplayBtn').addEventListener('click', resetMaze);
-
     startTimer();
     drawMaze();
   }
 
   // =====================================================
-  // MEMORY GAME
+  // MEMORY GAME (unchanged)
   // =====================================================
   function initMemory() {
     const symbols = ['💕','💖','💗','💘','💝','💞','💓','💟','🌸','🌹','✨','🦋','🌙','⭐','🎀','🍓'];
     let cards = [], flipped = [], matched = 0, memMoves = 0, memElapsed = 0, timerInt = null;
-
     function buildGrid() {
       const chosen = symbols.slice(0, 8);
       cards = shuffle([...chosen, ...chosen]);
@@ -499,9 +445,7 @@
       timerInt = setInterval(() => { memElapsed++; $('memTime').textContent = memElapsed + 's'; }, 1000);
       render();
     }
-
     function shuffle(arr) { return arr.sort(() => Math.random() - 0.5); }
-
     function render() {
       const grid = $('memoryGrid');
       grid.innerHTML = '';
@@ -511,40 +455,28 @@
         const front = el('div', 'mem-card-front', sym);
         card.appendChild(back);
         card.appendChild(front);
-
-        if (flipped.includes(idx) || matchedCards.has(idx)) {
-          card.classList.add('flipped');
-        }
-        if (matchedCards.has(idx)) {
-          card.classList.add('matched');
-        }
-
+        if (flipped.includes(idx) || matchedCards.has(idx)) card.classList.add('flipped');
+        if (matchedCards.has(idx)) card.classList.add('matched');
         card.addEventListener('click', () => clickCard(idx, card));
         grid.appendChild(card);
       });
     }
-
     const matchedCards = new Set();
     let processing = false;
-
     function clickCard(idx) {
       if (processing) return;
       if (matchedCards.has(idx)) return;
       if (flipped.includes(idx)) return;
-
       flipped.push(idx);
       render();
       AudioEngine.sfx.click();
-
       if (flipped.length === 2) {
         processing = true;
         memMoves++;
         $('memMoves').textContent = memMoves;
-
         const [a, b] = flipped;
         if (cards[a] === cards[b]) {
-          matchedCards.add(a);
-          matchedCards.add(b);
+          matchedCards.add(a); matchedCards.add(b);
           matched++;
           $('memPairs').textContent = matched;
           setTimeout(() => {
@@ -567,26 +499,23 @@
         }
       }
     }
-
     $('resetMemoryBtn').addEventListener('click', () => {
       matchedCards.clear();
       buildGrid();
       AudioEngine.sfx.click();
     });
-
     buildGrid();
   }
 
   // =====================================================
-  // CATCH GAME
+  // CATCH GAME (unchanged)
   // =====================================================
   function initCatch() {
-    const zone    = $('catchZone');
+    const zone = $('catchZone');
     let caught = 0, missed = 0, score = 0, gameInt = null, active = false;
     const emojis = ['💋','😘','💖','💕','❤️','🌹','💗','💝'];
-
     function spawnTarget() {
-      const zone_w = zone.clientWidth  - 50;
+      const zone_w = zone.clientWidth - 50;
       const zone_h = zone.clientHeight - 50;
       const t = el('div', 'catch-target', emojis[Math.floor(Math.random()*emojis.length)]);
       const x = Math.random() * zone_w;
@@ -594,7 +523,6 @@
       t.style.left = x + 'px';
       t.style.top  = y + 'px';
       t.style.animationDuration = (Math.random()*0.3+0.2) + 's';
-
       let alive = true;
       t.addEventListener('click', () => {
         if (!alive) return;
@@ -609,9 +537,7 @@
         t.style.opacity = '0';
         setTimeout(() => t.remove(), 300);
       });
-
       zone.appendChild(t);
-
       const moveInt = setInterval(() => {
         if (!alive || !active) { clearInterval(moveInt); return; }
         const nx = Math.random() * (zone.clientWidth - 50);
@@ -619,7 +545,6 @@
         t.style.left = nx + 'px';
         t.style.top  = ny + 'px';
       }, 600);
-
       setTimeout(() => {
         if (!alive) return;
         alive = false;
@@ -632,13 +557,11 @@
         setTimeout(() => t.remove(), 300);
       }, 2000);
     }
-
     function updateCatchUI() {
       $('caughtCount').textContent = caught;
       $('missedCount').textContent = missed;
       $('catchScore').textContent  = score;
     }
-
     $('startCatch').addEventListener('click', () => {
       if (active) return;
       active = true; caught = 0; missed = 0; score = 0;
@@ -647,7 +570,6 @@
       $('catchMsg').textContent = 'Catch the kisses! 💋';
       AudioEngine.sfx.click();
       gameInt = setInterval(spawnTarget, 900);
-
       setTimeout(() => {
         clearInterval(gameInt);
         active = false;
@@ -655,7 +577,6 @@
         showWin('💋', `Score: ${score}!`, `You caught ${caught} kisses and missed ${missed}! ${caught > 10 ? 'Amazing! 🌟' : 'Keep trying! 💕'}`);
       }, 30000);
     });
-
     $('stopCatch').addEventListener('click', () => {
       clearInterval(gameInt);
       active = false;
@@ -666,53 +587,43 @@
   }
 
   // =====================================================
-  // SNAKE GAME
+  // SNAKE GAME (unchanged)
   // =====================================================
   function initSnake() {
     const canvas = $('snakeCanvas');
-    const ctx    = canvas.getContext('2d');
-    const CELL   = 20;
-    const COLS   = 16;
-    const ROWS   = 16;
-
+    const ctx = canvas.getContext('2d');
+    const CELL = 20;
+    const COLS = 16, ROWS = 16;
     let snake, dir, nextDir, food, gameInt, score, highScore = 0, level, running = false;
-
     function init() {
-      snake   = [{ x:4, y:8 }, { x:3, y:8 }, { x:2, y:8 }];
-      dir     = { x:1, y:0 };
+      snake = [{ x:4, y:8 }, { x:3, y:8 }, { x:2, y:8 }];
+      dir = { x:1, y:0 };
       nextDir = { x:1, y:0 };
-      score   = 0;
-      level   = 1;
+      score = 0;
+      level = 1;
       placeFood();
       $('snakeScore').textContent = 0;
       $('snakeLevel').textContent = 1;
     }
-
     function placeFood() {
       let pos;
-      do {
-        pos = { x: Math.floor(Math.random()*COLS), y: Math.floor(Math.random()*ROWS) };
-      } while (snake.some(s => s.x === pos.x && s.y === pos.y));
+      do { pos = { x: Math.floor(Math.random()*COLS), y: Math.floor(Math.random()*ROWS) }; } while (snake.some(s => s.x === pos.x && s.y === pos.y));
       food = pos;
     }
-
     function draw() {
       const bg = ctx.createLinearGradient(0,0,canvas.width,canvas.height);
       bg.addColorStop(0,'rgba(255,240,246,0.7)');
       bg.addColorStop(1,'rgba(255,220,235,0.7)');
       ctx.fillStyle = bg;
       ctx.fillRect(0,0,canvas.width,canvas.height);
-
       ctx.strokeStyle = 'rgba(255,77,141,0.08)';
       ctx.lineWidth = 0.5;
       for (let x = 0; x <= COLS; x++) { ctx.beginPath(); ctx.moveTo(x*CELL,0); ctx.lineTo(x*CELL,canvas.height); ctx.stroke(); }
       for (let y = 0; y <= ROWS; y++) { ctx.beginPath(); ctx.moveTo(0,y*CELL); ctx.lineTo(canvas.width,y*CELL); ctx.stroke(); }
-
       ctx.font = `${CELL*0.9}px "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif`;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       ctx.fillText('💖', food.x*CELL+CELL/2, food.y*CELL+CELL/2);
-
       snake.forEach((seg, i) => {
         const ratio = 1 - i / snake.length;
         ctx.fillStyle = `hsl(${330 + i*3}, 80%, ${40 + ratio*25}%)`;
@@ -720,22 +631,16 @@
         const radius = i === 0 ? 8 : 5;
         roundRect(ctx, seg.x*CELL+margin, seg.y*CELL+margin, CELL-margin*2, CELL-margin*2, radius);
         ctx.fill();
-
         if (i === 0) {
           ctx.fillStyle = 'white';
-          ctx.beginPath();
-          ctx.arc(seg.x*CELL+CELL*0.3, seg.y*CELL+CELL*0.35, 3, 0, Math.PI*2); ctx.fill();
-          ctx.beginPath();
-          ctx.arc(seg.x*CELL+CELL*0.7, seg.y*CELL+CELL*0.35, 3, 0, Math.PI*2); ctx.fill();
+          ctx.beginPath(); ctx.arc(seg.x*CELL+CELL*0.3, seg.y*CELL+CELL*0.35, 3, 0, Math.PI*2); ctx.fill();
+          ctx.beginPath(); ctx.arc(seg.x*CELL+CELL*0.7, seg.y*CELL+CELL*0.35, 3, 0, Math.PI*2); ctx.fill();
           ctx.fillStyle = '#111';
-          ctx.beginPath();
-          ctx.arc(seg.x*CELL+CELL*0.3, seg.y*CELL+CELL*0.35, 1.5, 0, Math.PI*2); ctx.fill();
-          ctx.beginPath();
-          ctx.arc(seg.x*CELL+CELL*0.7, seg.y*CELL+CELL*0.35, 1.5, 0, Math.PI*2); ctx.fill();
+          ctx.beginPath(); ctx.arc(seg.x*CELL+CELL*0.3, seg.y*CELL+CELL*0.35, 1.5, 0, Math.PI*2); ctx.fill();
+          ctx.beginPath(); ctx.arc(seg.x*CELL+CELL*0.7, seg.y*CELL+CELL*0.35, 1.5, 0, Math.PI*2); ctx.fill();
         }
       });
     }
-
     function roundRect(ctx, x, y, w, h, r) {
       ctx.beginPath();
       ctx.moveTo(x+r, y);
@@ -749,16 +654,12 @@
       ctx.arcTo(x, y, x+r, y, r);
       ctx.closePath();
     }
-
     function step() {
       dir = { ...nextDir };
       const head = { x: snake[0].x + dir.x, y: snake[0].y + dir.y };
-
       if (head.x < 0 || head.x >= COLS || head.y < 0 || head.y >= ROWS) return die();
       if (snake.some(s => s.x === head.x && s.y === head.y)) return die();
-
       snake.unshift(head);
-
       if (head.x === food.x && head.y === food.y) {
         score += 10 * level;
         if (score >= level * 100) level++;
@@ -773,10 +674,8 @@
       } else {
         snake.pop();
       }
-
       draw();
     }
-
     function die() {
       clearInterval(gameInt);
       running = false;
@@ -789,7 +688,6 @@
         toast('💔 Game Over! Score: ' + score);
       }
     }
-
     $('startSnake').addEventListener('click', () => {
       if (running) { clearInterval(gameInt); running = false; }
       init();
@@ -797,30 +695,26 @@
       AudioEngine.sfx.click();
       gameInt = setInterval(step, 200);
     });
-
     const dirMap = {
       ArrowUp:   {x:0,y:-1,opp:{x:0,y:1}},
       ArrowDown: {x:0,y:1,opp:{x:0,y:-1}},
       ArrowLeft: {x:-1,y:0,opp:{x:1,y:0}},
       ArrowRight:{x:1,y:0,opp:{x:-1,y:0}}
     };
-
     document.addEventListener('keydown', e => {
       const d = dirMap[e.key];
       if (d && !(dir.x === d.opp.x && dir.y === d.opp.y)) { e.preventDefault(); nextDir = { x:d.x, y:d.y }; }
     });
-
     $('sUp').addEventListener('click',    () => { if (dir.y !== 1)  nextDir = {x:0,y:-1}; });
     $('sDown').addEventListener('click',  () => { if (dir.y !== -1) nextDir = {x:0,y:1}; });
     $('sLeft').addEventListener('click',  () => { if (dir.x !== 1)  nextDir = {x:-1,y:0}; });
     $('sRight').addEventListener('click', () => { if (dir.x !== -1) nextDir = {x:1,y:0}; });
-
     init();
     draw();
   }
 
   // =====================================================
-  // QUIZ
+  // QUIZ (unchanged)
   // =====================================================
   function initQuiz() {
     const questions = [
@@ -835,10 +729,8 @@
       { q: "How long will Utsav love Ankita?", opts: ["A year","Forever","Until graduation","5 years"], a: 1, fun: "Forever and beyond! In every life after this! 💖" },
       { q: "What does Utsav call this website?", opts: ["A project","For My Kanchi","Random","Homework"], a: 1, fun: "'For My Kanchi' — made with infinite love! 💌" }
     ];
-
     let qIdx = 0, correctCount = 0;
     const total = questions.length;
-
     function loadQ() {
       if (qIdx >= total) { showResult(); return; }
       const q = questions[qIdx];
@@ -846,14 +738,12 @@
       $('quizQuestion').textContent = (qIdx + 1) + '. ' + q.q;
       $('quizOptions').innerHTML = '';
       $('quizFeedback').classList.add('hidden');
-
       q.opts.forEach((opt, i) => {
         const btn = el('button', 'quiz-opt', opt);
         btn.addEventListener('click', () => answerQ(i, q, btn));
         $('quizOptions').appendChild(btn);
       });
     }
-
     function answerQ(i, q, btn) {
       document.querySelectorAll('.quiz-opt').forEach(b => b.disabled = true);
       if (i === q.a) {
@@ -870,16 +760,12 @@
         $('quizFeedback').textContent = '💡 ' + q.fun;
         $('quizFeedback').classList.remove('hidden');
       }
-      setTimeout(() => {
-        qIdx++;
-        loadQ();
-      }, 1800);
+      setTimeout(() => { qIdx++; loadQ(); }, 1800);
     }
-
     function showResult() {
       $('quizBar').style.width = '100%';
       $('quizQuestion').textContent = '';
-      $('quizOptions').innerHTML  = '';
+      $('quizOptions').innerHTML = '';
       $('quizFeedback').classList.add('hidden');
       $('quizResult').classList.remove('hidden');
       const pct = Math.round(correctCount / total * 100);
@@ -901,12 +787,11 @@
         loadQ();
       });
     }
-
     loadQ();
   }
 
   // =====================================================
-  // FORTUNE TELLER
+  // FORTUNE TELLER (unchanged)
   // =====================================================
   function initFortune() {
     const fortunes = [
@@ -926,14 +811,11 @@
       "Love like yours only comes once in a lifetime — treasure it. 💍",
       "आज तिमीलाई धेरै माया गरिन्छ — Today you are deeply loved! 🇳🇵❤️"
     ];
-
     let shaking = false;
-
     $('crystalBall').addEventListener('click', () => {
       if (shaking) return;
       shaking = true;
       AudioEngine.sfx.fortune();
-
       const ball = $('crystalBall');
       ball.style.transition = 'transform 0.1s';
       let shakeCount = 0;
@@ -944,7 +826,6 @@
           clearInterval(shakeInt);
           ball.style.transform = '';
           shaking = false;
-
           const fortune = fortunes[Math.floor(Math.random() * fortunes.length)];
           const ft = $('fortuneText');
           ft.textContent = fortune;
@@ -958,7 +839,7 @@
   }
 
   // =====================================================
-  // KISS COUNTER
+  // KISS COUNTER (unchanged)
   // =====================================================
   function initKissCounter() {
     function renderKiss() {
@@ -966,41 +847,25 @@
       $('totalKisses').textContent = state.kisses;
       $('kissStreak').textContent  = state.streak;
     }
-
     $('kissBtn').addEventListener('click', () => {
-      state.kisses++;
-      state.streak++;
-      state.lovePoints += 3;
-      renderKiss();
-      saveState(); updateStats();
+      state.kisses++; state.streak++; state.lovePoints += 3;
+      renderKiss(); saveState(); updateStats();
       AudioEngine.sfx.kiss();
-
       const anim = $('kissAnim');
       anim.classList.remove('pop');
       requestAnimationFrame(() => anim.classList.add('pop'));
-
-      if (state.streak % 10 === 0) {
-        toast(`🔥 ${state.streak} kiss streak! You're on fire!`);
-        burst(30);
-      }
+      if (state.streak % 10 === 0) { toast(`🔥 ${state.streak} kiss streak! You're on fire!`); burst(30); }
     });
-
     $('superKissBtn').addEventListener('click', () => {
-      state.kisses += 10;
-      state.streak += 10;
-      state.lovePoints += 30;
-      renderKiss();
-      saveState(); updateStats();
-      AudioEngine.sfx.superKiss();
-      burst(60);
-      toast('💋💋💋 SUPER KISS! ×10! 💋💋💋');
+      state.kisses += 10; state.streak += 10; state.lovePoints += 30;
+      renderKiss(); saveState(); updateStats();
+      AudioEngine.sfx.superKiss(); burst(60); toast('💋💋💋 SUPER KISS! ×10! 💋💋💋');
     });
-
     renderKiss();
   }
 
   // =====================================================
-  // LOVE CLICKER
+  // LOVE CLICKER (unchanged)
   // =====================================================
   function initClicker() {
     let autoRate = 0;
@@ -1011,7 +876,6 @@
       { id:'upg4', cost:5000, rate:100 }
     ];
     const purchased = new Set();
-
     function renderClicker() {
       $('clickerPoints').textContent = Math.floor(state.lovePoints);
       $('clickerRate').textContent   = autoRate;
@@ -1023,7 +887,6 @@
         if (purchased.has(u.id)) btn.classList.add('purchased');
       });
     }
-
     $('clickerHeart').addEventListener('click', e => {
       state.lovePoints += 5;
       state.hearts++;
@@ -1031,17 +894,14 @@
       saveState();
       AudioEngine.sfx.heartClick();
       renderClicker();
-
       const heart = $('clickerHeart');
       heart.classList.remove('clicked');
       requestAnimationFrame(() => heart.classList.add('clicked'));
-
       const plus = el('div', 'float-heart', '+5 💖');
       plus.style.cssText = `left:${e.clientX}px;top:${e.clientY}px;font-size:16px;animation-duration:1.2s;`;
       $('floatHearts').appendChild(plus);
       setTimeout(() => plus.remove(), 1500);
     });
-
     upgrades.forEach(u => {
       const btn = $(u.id);
       if (!btn) return;
@@ -1057,7 +917,6 @@
         $('clickerRate').textContent = autoRate;
       });
     });
-
     setInterval(() => {
       if (autoRate > 0) {
         state.lovePoints += autoRate / 10;
@@ -1065,12 +924,11 @@
         if (Math.random() < 0.005) saveState();
       }
     }, 100);
-
     renderClicker();
   }
 
   // =====================================================
-  // LOVE LETTER GENERATOR
+  // LOVE LETTER GENERATOR (unchanged)
   // =====================================================
   function initLetterGenerator() {
     let mood = 'romantic';
@@ -1093,7 +951,6 @@
         (seed) => `मेरी जान अंकिता,\n\n${seed ? seed + ' के बारे में सोचते हुए तुम्हारा ख़याल आया।' : 'तुम्हारे बिना ये दुनिया अधूरी सी लगती है।'}\n\nतुम्हारी हँसी सुनकर दिल को सुकून मिलता है। तुम्हारी आँखों में देखकर लगता है — यही घर है, यही मंज़िल है।\n\nतुमसे प्यार करना मेरी सबसे बड़ी ख़ुशक़िस्मती है।\n\nहमेशा तुम्हारा,\nउत्सव 💕`
       ]
     };
-
     document.querySelectorAll('.mood-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('active'));
@@ -1102,32 +959,22 @@
         AudioEngine.sfx.click();
       });
     });
-
     $('genLetterBtn').addEventListener('click', () => {
       const seed = $('letterSeed').value.trim();
       const moodLetters = letters[mood] || letters.romantic;
       const letter = moodLetters[Math.floor(Math.random() * moodLetters.length)](seed);
-
       const out = $('generatedLetterOutput');
       out.textContent = letter;
       out.classList.remove('hidden');
-
       const copyBtn = $('copyLetterBtn');
       copyBtn.classList.remove('hidden');
-
       AudioEngine.sfx.fortune();
       burst(20);
       toast('💌 Love letter generated!');
     });
-
     $('copyLetterBtn').addEventListener('click', () => {
       const text = $('generatedLetterOutput').textContent;
-      navigator.clipboard.writeText(text).then(() => {
-        toast('📋 Letter copied to clipboard! 💕');
-        AudioEngine.sfx.click();
-      }).catch(() => {
-        toast('Copy from the letter manually 💕');
-      });
+      navigator.clipboard.writeText(text).then(() => { toast('📋 Letter copied to clipboard! 💕'); AudioEngine.sfx.click(); }).catch(() => { toast('Copy from the letter manually 💕'); });
     });
   }
 
@@ -1144,7 +991,6 @@
       { name: "Love Story - Taylor Swift", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-18.mp3" },
       { name: "तिम्रो माया (Original)", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-7.mp3" }
     ];
-
     const container = $('playlistItems');
     playlistTracks.forEach(track => {
       const div = el('div', 'playlist-item');
@@ -1158,14 +1004,12 @@
       });
       container.appendChild(div);
     });
-
     playerAudio.addEventListener('play', () => {
       $('trackName').textContent = playlistTracks.find(t => playerAudio.src.includes(t.src))?.name || 'Unknown';
       $('vinyl').classList.add('spinning');
     });
     playerAudio.addEventListener('pause', () => $('vinyl').classList.remove('spinning'));
     playerAudio.addEventListener('ended', () => $('vinyl').classList.remove('spinning'));
-
     setInterval(() => {
       if (!playerAudio.paused && playerAudio.duration) {
         const prog = (playerAudio.currentTime / playerAudio.duration) * 100;
@@ -1177,31 +1021,27 @@
   }
 
   // =====================================================
-  // PHOTO GALLERY (persistent via localStorage)
+  // PHOTO GALLERY (shared via Firebase Storage)
   // =====================================================
   function initGallery() {
     const gallery = $('photoGallery');
-    const STORAGE_KEY = 'love_gallery_photos';
 
-    // Load saved images from localStorage
-    function loadPhotos() {
-      const saved = localStorage.getItem(STORAGE_KEY);
-      if (saved) {
-        const photos = JSON.parse(saved);
-        photos.forEach(src => {
-          const img = document.createElement('img');
-          img.src = src;
-          img.className = 'gallery-photo';
-          img.addEventListener('click', () => openFullscreen(img));
-          gallery.appendChild(img);
+    // Listen for new images from Firebase Storage
+    const imagesRef = storage.ref('gallery');
+    imagesRef.listAll().then(res => {
+      res.items.forEach(itemRef => {
+        itemRef.getDownloadURL().then(url => {
+          addImageToGallery(url);
         });
-      }
-    }
+      });
+    });
 
-    // Save all current images to localStorage
-    function savePhotos() {
-      const images = Array.from(gallery.querySelectorAll('img')).map(img => img.src);
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(images));
+    function addImageToGallery(url) {
+      const img = document.createElement('img');
+      img.src = url;
+      img.className = 'gallery-photo';
+      img.addEventListener('click', () => openFullscreen(img));
+      gallery.appendChild(img);
     }
 
     function openFullscreen(img) {
@@ -1218,37 +1058,25 @@
     // Upload handler
     $('photoUpload').addEventListener('change', e => {
       Array.from(e.target.files).forEach(file => {
-        const reader = new FileReader();
-        reader.onload = ev => {
-          const img = document.createElement('img');
-          img.src = ev.target.result;
-          img.className = 'gallery-photo';
-          img.addEventListener('click', () => openFullscreen(img));
-          gallery.appendChild(img);
-          savePhotos();
-        };
-        reader.readAsDataURL(file);
+        const uploadTask = storage.ref('gallery/' + Date.now() + '_' + file.name).put(file);
+        uploadTask.on('state_changed', null, null, () => {
+          uploadTask.snapshot.ref.getDownloadURL().then(url => {
+            addImageToGallery(url);
+            toast('📸 Photo uploaded!');
+          });
+        });
       });
-      toast('📸 Photos added and saved!');
     });
-
-    // Load existing photos on init
-    loadPhotos();
   }
 
   // =====================================================
-  // LOVE CALCULATOR
+  // LOVE CALCULATOR (unchanged)
   // =====================================================
   function initLoveCalc() {
     $('loveCalcBtn').addEventListener('click', () => {
-      const percent = Math.floor(Math.random() * 41) + 80; // 80-120%
+      const percent = Math.floor(Math.random() * 41) + 80;
       const display = percent > 100 ? '∞' : percent + '%';
-      const messages = [
-        'Perfect match! 💞',
-        'Made for each other! 💖',
-        'Unbreakable bond! 💕',
-        'Love beyond measure! 💗'
-      ];
+      const messages = ['Perfect match! 💞', 'Made for each other! 💖', 'Unbreakable bond! 💕', 'Love beyond measure! 💗'];
       $('loveResult').innerHTML = `✨ ${display} Compatibility ✨<br>${messages[Math.floor(Math.random() * messages.length)]}`;
       AudioEngine.sfx.fortune();
       burst(30);
@@ -1256,47 +1084,45 @@
   }
 
   // =====================================================
-  // MESSAGE WALL (persistent via localStorage)
+  // MESSAGE WALL (shared via Firebase Realtime Database)
   // =====================================================
   function initMessageWall() {
     const wall = $('wallMessages');
     const input = $('wallMessage');
     const postBtn = $('postMessageBtn');
-    const STORAGE_KEY = 'love_wall_messages';
+    const messagesRef = database.ref('messages');
 
-    function loadMessages() {
-      const saved = localStorage.getItem(STORAGE_KEY);
-      if (saved) {
-        const msgs = JSON.parse(saved);
-        msgs.forEach(msg => addMessageToDOM(msg));
-      }
-    }
+    // Load messages on startup
+    messagesRef.on('child_added', snapshot => {
+      const msg = snapshot.val();
+      addMessageToDOM(msg.text, msg.timestamp);
+    });
 
-    function saveMessages() {
-      const msgs = Array.from(wall.querySelectorAll('.wall-message-item')).map(el => el.textContent);
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(msgs));
-    }
-
-    function addMessageToDOM(text) {
+    function addMessageToDOM(text, timestamp) {
       const msgDiv = el('div', 'wall-message-item', text);
+      const timeSpan = el('span', '', new Date(timestamp).toLocaleString());
+      timeSpan.style.fontSize = '0.7rem';
+      timeSpan.style.opacity = '0.7';
+      timeSpan.style.marginLeft = '10px';
+      msgDiv.appendChild(timeSpan);
       wall.appendChild(msgDiv);
     }
 
     postBtn.addEventListener('click', () => {
       const text = input.value.trim();
       if (!text) return;
-      addMessageToDOM(text);
-      saveMessages();
+      messagesRef.push({
+        text: text,
+        timestamp: Date.now()
+      });
       input.value = '';
       AudioEngine.sfx.click();
       toast('💬 Message posted!');
     });
-
-    loadMessages();
   }
 
   // =====================================================
-  // REASONS I LOVE YOU
+  // REASONS I LOVE YOU (unchanged)
   // =====================================================
   function initReasons() {
     const reasons = [
@@ -1399,10 +1225,8 @@
       "Because loving you is the best thing I've ever done.",
       "Because you are, simply, everything. 💖"
     ];
-
     const grid = $('reasonsGrid');
     const revealed = new Set();
-
     reasons.forEach((reason, i) => {
       const petal = el('div', 'reason-petal', (i+1).toString());
       petal.addEventListener('click', () => {
@@ -1416,21 +1240,17 @@
       });
       grid.appendChild(petal);
     });
-
     $('closeReason').addEventListener('click', () => {
       $('reasonModal').classList.add('hidden');
       AudioEngine.sfx.click();
     });
-
     $('reasonModal').addEventListener('click', e => {
-      if (e.target === $('reasonModal')) {
-        $('reasonModal').classList.add('hidden');
-      }
+      if (e.target === $('reasonModal')) $('reasonModal').classList.add('hidden');
     });
   }
 
   // =====================================================
-  // FOOTER ANIMATED HEARTS
+  // FOOTER ANIMATED HEARTS (unchanged)
   // =====================================================
   function initFooterHearts() {
     const container = $('footerHearts');
@@ -1443,7 +1263,7 @@
   }
 
   // =====================================================
-  // KEYBOARD SHORTCUTS
+  // KEYBOARD SHORTCUTS (unchanged)
   // =====================================================
   document.addEventListener('keydown', e => {
     if (e.key === 'k' || e.key === 'K') $('kissBtn') && $('kissBtn').click();
@@ -1451,11 +1271,10 @@
   });
 
   // =====================================================
-  // LIVE LOVE TIMER (Dec 10, 2024)
+  // LIVE LOVE TIMER (unchanged)
   // =====================================================
   function initLiveTimer() {
     const START = new Date('2024-12-10T00:00:00');
-
     const messages = [
       "Every second I love you more 💖",
       "That's a lot of heartbeats for you 💓",
@@ -1466,11 +1285,8 @@
       "तिम्रो माया मा डुबेको छु 💗",
       "More seconds = more love 🌹",
     ];
-
     let lastSec = -1, msgIdx = 0;
-
     function pad(n) { return String(n).padStart(2, '0'); }
-
     function tick() {
       const now    = Date.now();
       const diff   = Math.floor((now - START.getTime()) / 1000);
@@ -1478,27 +1294,22 @@
       const hours  = Math.floor((diff % 86400) / 3600);
       const mins   = Math.floor((diff % 3600) / 60);
       const secs   = diff % 60;
-
       const dEl = document.getElementById('tDays');
       const hEl = document.getElementById('tHours');
       const mEl = document.getElementById('tMins');
       const sEl = document.getElementById('tSecs');
       const tEl = document.getElementById('tTotalSecs');
       const mMsg = document.getElementById('timerMessage');
-
       if (!dEl) return;
-
       dEl.textContent = days;
       hEl.textContent = pad(hours);
       mEl.textContent = pad(mins);
       sEl.textContent = pad(secs);
       if (tEl) tEl.textContent = diff.toLocaleString();
-
       if (secs !== lastSec) {
         lastSec = secs;
         sEl.style.transform = 'scale(1.2)';
         setTimeout(() => { sEl.style.transform = ''; }, 150);
-
         if (secs % 15 === 0 && mMsg) {
           mMsg.style.opacity = '0';
           setTimeout(() => {
@@ -1509,7 +1320,6 @@
         }
       }
     }
-
     function start() {
       if (document.getElementById('tDays')) {
         tick();
@@ -1520,7 +1330,6 @@
         setTimeout(start, 500);
       }
     }
-
     start();
   }
 
@@ -1546,10 +1355,10 @@
     initClicker();
     initLetterGenerator();
     initMusicPlayer();
-    initGallery();
+    initGallery();        // Firebase storage
     initReasons();
     initLoveCalc();
-    initMessageWall();
+    initMessageWall();    // Firebase database
   }
 
   // =====================================================
@@ -1557,7 +1366,6 @@
   // =====================================================
   function initWelcomeAndStart() {
     initWelcome();
-
     const observer = new MutationObserver((mutations) => {
       mutations.forEach(m => {
         if (m.attributeName === 'class' && !$('mainApp').classList.contains('hidden')) {
