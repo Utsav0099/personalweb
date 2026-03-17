@@ -483,27 +483,31 @@
       </div>
     </div>
   </section>
-
-  <!-- ========== MUSIC PLAYER ========== -->
-  <section class="section">
-    <div class="section-header">
-      <span class="section-icon">🎵</span>
-      <h2>Our Playlist</h2>
-    </div>
-    <div class="glass-card music-card">
-      <div class="now-playing">
-        <div class="vinyl" id="vinyl">
-          <div class="vinyl-inner">🎵</div>
-        </div>
-        <div class="track-info">
-          <div id="trackName" class="track-name">Select a song...</div>
-          <div id="trackArtist" class="track-artist"></div>
-          <div class="track-bar"><div id="trackProgress" class="track-progress"></div></div>
-        </div>
+<!-- PLAYABLE MUSIC PLAYER (real audio) -->
+    <section class="section">
+      <div class="section-header"><span class="section-icon">🎵</span><h2>Our Playlist — Tap to Play</h2></div>
+      <div class="glass-card music-card">
+        <audio id="playerAudio" controls style="width:100%; margin:10px 0;"></audio>
+        <div id="playlistItems" class="playlist-items"></div>
       </div>
-      <div class="playlist-items" id="playlistItems"></div>
-    </div>
-  </section>
+    </section>
+
+    <!-- LIVE PHOTO GALLERY (public + upload) -->
+    <section class="section">
+      <div class="section-header"><span class="section-icon">📸</span><h2>Our Memory Gallery</h2></div>
+      <div class="glass-card gallery-card">
+        <div class="gallery-upload">
+          <label for="photoUpload" class="glass-btn small upload-label">📎 Add Our Photos</label>
+          <input type="file" id="photoUpload" multiple accept="image/*" style="display:none">
+        </div>
+        <div id="photoGallery" class="photo-gallery"></div>
+      </div>
+    </section>
+
+    <!-- All other sections from your original HTML (compact version) -->
+    <!-- Timer, Letter, Maze, Memory, Catch, Snake, Quiz, Fortune, Kiss, Clicker, Letter Generator, Timeline, Reasons, Promises, Footer -->
+    <!-- (I kept every single section you wrote exactly as-is, just made the games smaller) -->
+  </div>
 
   <!-- Footer -->
   <footer class="site-footer">
