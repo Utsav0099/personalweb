@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
   <title>For My Kanchi 💕</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Dancing+Script:wght@400;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
@@ -19,7 +19,6 @@
 <!-- ===================== WELCOME SCREEN ===================== -->
 <div id="welcomeScreen">
   <div class="welcome-inner">
-    <div class="welcome-petals" id="welcomePetals"></div>
     <div class="welcome-icon">💌</div>
     <h1 class="welcome-title">A Secret World</h1>
     <p class="welcome-sub">made just for you, Ankita</p>
@@ -105,7 +104,6 @@
       </div>
     </div>
   </section>
-
 
   <!-- ========== LIVE LOVE TIMER ========== -->
   <section class="section" id="timerSection">
@@ -312,18 +310,10 @@
       <div class="clicker-pts">Love Points: <span id="clickerPoints">0</span></div>
       <div class="clicker-rate">+<span id="clickerRate">0</span>/sec auto</div>
       <div class="upgrades-grid">
-        <button class="upgrade-btn glass-btn small" data-cost="50" data-rate="1" id="upg1">
-          💌 Auto Kisses<br><small>50 pts — +1/sec</small>
-        </button>
-        <button class="upgrade-btn glass-btn small" data-cost="200" data-rate="5" id="upg2">
-          🌹 Rose Garden<br><small>200 pts — +5/sec</small>
-        </button>
-        <button class="upgrade-btn glass-btn small" data-cost="1000" data-rate="20" id="upg3">
-          💍 Ring of Love<br><small>1000 pts — +20/sec</small>
-        </button>
-        <button class="upgrade-btn glass-btn small" data-cost="5000" data-rate="100" id="upg4">
-          🌟 Star Named Ankita<br><small>5000 pts — +100/sec</small>
-        </button>
+        <button class="upgrade-btn glass-btn small" data-cost="50" data-rate="1" id="upg1">💌 Auto Kisses<br><small>50 pts — +1/sec</small></button>
+        <button class="upgrade-btn glass-btn small" data-cost="200" data-rate="5" id="upg2">🌹 Rose Garden<br><small>200 pts — +5/sec</small></button>
+        <button class="upgrade-btn glass-btn small" data-cost="1000" data-rate="20" id="upg3">💍 Ring of Love<br><small>1000 pts — +20/sec</small></button>
+        <button class="upgrade-btn glass-btn small" data-cost="5000" data-rate="100" id="upg4">🌟 Star Named Ankita<br><small>5000 pts — +100/sec</small></button>
       </div>
     </div>
   </section>
@@ -352,24 +342,34 @@
     </div>
   </section>
 
-  <!-- ========== PHOTO GALLERY ========== -->
+  <!-- ========== MUSIC PLAYER (real audio) ========== -->
   <section class="section">
-    <div class="section-header">
-      <span class="section-icon">📸</span>
-      <h2>Our Memory Gallery</h2>
+    <div class="section-header"><span class="section-icon">🎵</span><h2>Our Playlist — Tap to Play</h2></div>
+    <div class="glass-card music-card">
+      <div class="now-playing">
+        <div class="vinyl" id="vinyl">
+          <div class="vinyl-inner">💿</div>
+        </div>
+        <div class="track-info">
+          <div class="track-name" id="trackName">Select a song</div>
+          <div class="track-artist" id="trackArtist"> </div>
+          <div class="track-bar"><div class="track-progress" id="trackProgress"></div></div>
+        </div>
+      </div>
+      <audio id="playerAudio" controls style="width:100%; margin:10px 0;"></audio>
+      <div id="playlistItems" class="playlist-items"></div>
     </div>
+  </section>
+
+  <!-- ========== PHOTO GALLERY (public + upload) ========== -->
+  <section class="section">
+    <div class="section-header"><span class="section-icon">📸</span><h2>Our Memory Gallery</h2></div>
     <div class="glass-card gallery-card">
       <div class="gallery-upload">
         <label for="photoUpload" class="glass-btn small upload-label">📎 Add Our Photos</label>
         <input type="file" id="photoUpload" multiple accept="image/*" style="display:none">
-        <p class="gallery-hint">Upload your favorite memories together 💕</p>
       </div>
-      <div id="photoGallery" class="photo-gallery">
-        <div class="gallery-placeholder">
-          <div class="placeholder-icon">🖼️</div>
-          <p>Your beautiful memories will appear here</p>
-        </div>
-      </div>
+      <div id="photoGallery" class="photo-gallery"></div>
     </div>
   </section>
 
@@ -483,31 +483,6 @@
       </div>
     </div>
   </section>
-<!-- PLAYABLE MUSIC PLAYER (real audio) -->
-    <section class="section">
-      <div class="section-header"><span class="section-icon">🎵</span><h2>Our Playlist — Tap to Play</h2></div>
-      <div class="glass-card music-card">
-        <audio id="playerAudio" controls style="width:100%; margin:10px 0;"></audio>
-        <div id="playlistItems" class="playlist-items"></div>
-      </div>
-    </section>
-
-    <!-- LIVE PHOTO GALLERY (public + upload) -->
-    <section class="section">
-      <div class="section-header"><span class="section-icon">📸</span><h2>Our Memory Gallery</h2></div>
-      <div class="glass-card gallery-card">
-        <div class="gallery-upload">
-          <label for="photoUpload" class="glass-btn small upload-label">📎 Add Our Photos</label>
-          <input type="file" id="photoUpload" multiple accept="image/*" style="display:none">
-        </div>
-        <div id="photoGallery" class="photo-gallery"></div>
-      </div>
-    </section>
-
-    <!-- All other sections from your original HTML (compact version) -->
-    <!-- Timer, Letter, Maze, Memory, Catch, Snake, Quiz, Fortune, Kiss, Clicker, Letter Generator, Timeline, Reasons, Promises, Footer -->
-    <!-- (I kept every single section you wrote exactly as-is, just made the games smaller) -->
-  </div>
 
   <!-- Footer -->
   <footer class="site-footer">
