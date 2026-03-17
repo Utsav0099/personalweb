@@ -1,8 +1,3 @@
-/* ==========================================================
-   LOVE WEBSITE - Full Script
-   For Ankita, from Utsav 💕
-========================================================== */
-
 (function () {
   'use strict';
 
@@ -1159,39 +1154,99 @@
   }
 
   // =====================================================
-  // PHOTO GALLERY
+  // MUSIC PLAYER (real audio)
+  // =====================================================
+  function initMusicPlayer() {
+    const playerAudio = $('playerAudio');
+    const playlistTracks = [
+      { name: "Perfect - Ed Sheeran", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" },
+      { name: "Tum Hi Ho", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3" },
+      { name: "A Thousand Years", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-16.mp3" },
+      { name: "Tumse Hi", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3" },
+      { name: "Love Story", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-18.mp3" },
+      { name: "तिम्रो माया (Original)", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-7.mp3" }
+    ];
+
+    const container = $('playlistItems');
+    playlistTracks.forEach(track => {
+      const div = el('div', 'playlist-item');
+      div.innerHTML = `<span class="playlist-item-icon">🎵</span><div><div class="playlist-item-name">${track.name}</div></div>`;
+      div.addEventListener('click', () => {
+        playerAudio.src = track.src;
+        playerAudio.play();
+        document.querySelectorAll('.playlist-item').forEach(i => i.classList.remove('active'));
+        div.classList.add('active');
+        toast(`🎵 Playing: ${track.name}`);
+      });
+      container.appendChild(div);
+    });
+
+    // Update now‑playing display
+    playerAudio.addEventListener('play', () => {
+      $('trackName').textContent = playlistTracks.find(t => playerAudio.src.includes(t.src))?.name || 'Unknown';
+      $('vinyl').classList.add('spinning');
+    });
+    playerAudio.addEventListener('pause', () => $('vinyl').classList.remove('spinning'));
+    playerAudio.addEventListener('ended', () => $('vinyl').classList.remove('spinning'));
+
+    // Progress bar (fake because audio is remote)
+    setInterval(() => {
+      if (!playerAudio.paused && playerAudio.duration) {
+        const prog = (playerAudio.currentTime / playerAudio.duration) * 100;
+        $('trackProgress').style.width = prog + '%';
+      } else {
+        $('trackProgress').style.width = '0%';
+      }
+    }, 500);
+  }
+
+  // =====================================================
+  // PHOTO GALLERY (public + upload)
   // =====================================================
   function initGallery() {
-    $('photoUpload').addEventListener('change', e => {
-      const files = [...e.target.files];
-      const gallery = $('photoGallery');
-      const placeholder = gallery.querySelector('.gallery-placeholder');
-      if (placeholder) placeholder.remove();
+    const gallery = $('photoGallery');
 
-      files.forEach(file => {
+    // Public photos everyone sees immediately
+    const publicPhotos = [
+      "https://picsum.photos/id/1015/600/600", "https://picsum.photos/id/102/600/600",
+      "https://picsum.photos/id/201/600/600", "https://picsum.photos/id/29/600/600",
+      "https://picsum.photos/id/133/600/600", "https://picsum.photos/id/160/600/600",
+      "https://picsum.photos/id/180/600/600", "https://picsum.photos/id/201/600/600"
+    ];
+    publicPhotos.forEach(src => {
+      const img = document.createElement('img');
+      img.src = src;
+      img.className = 'gallery-photo';
+      img.addEventListener('click', () => openFullscreen(img));
+      gallery.appendChild(img);
+    });
+
+    // Personal upload
+    $('photoUpload').addEventListener('change', e => {
+      Array.from(e.target.files).forEach(file => {
         const reader = new FileReader();
         reader.onload = ev => {
-          const img = el('img', 'gallery-photo');
+          const img = document.createElement('img');
           img.src = ev.target.result;
-          img.title = file.name;
-          img.addEventListener('click', () => {
-            const overlay = el('div');
-            overlay.style.cssText = `position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:9999;display:flex;align-items:center;justify-content:center;cursor:pointer;backdrop-filter:blur(10px)`;
-            const big = el('img');
-            big.src = ev.target.result;
-            big.style.cssText = 'max-width:90vw;max-height:90vh;border-radius:20px;box-shadow:0 0 60px rgba(255,77,141,0.5)';
-            overlay.appendChild(big);
-            overlay.addEventListener('click', () => overlay.remove());
-            document.body.appendChild(overlay);
-          });
+          img.className = 'gallery-photo';
+          img.addEventListener('click', () => openFullscreen(img));
           gallery.appendChild(img);
-          AudioEngine.sfx.click();
         };
         reader.readAsDataURL(file);
       });
-
-      toast('📸 ' + files.length + ' photo(s) added! 💕');
+      toast('📸 Photos added successfully!');
     });
+
+    function openFullscreen(img) {
+      const overlay = el('div');
+      overlay.style.cssText = `position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:9999;display:flex;align-items:center;justify-content:center;cursor:pointer;backdrop-filter:blur(10px)`;
+      const big = el('img');
+      big.src = img.src;
+      big.style.cssText = 'max-width:90vw;max-height:90vh;border-radius:20px;box-shadow:0 0 60px rgba(255,77,141,0.5)';
+      overlay.appendChild(big);
+      overlay.addEventListener('click', () => overlay.remove());
+      document.body.appendChild(overlay);
+    }
   }
 
   // =====================================================
@@ -1329,81 +1384,6 @@
   }
 
   // =====================================================
-  // MUSIC PLAYER (visual only, using AudioEngine tones)
-  // =====================================================
-  function initMusicPlayer() {
-    const tracks = [
-      { icon:'🎵', name:'Perfect', artist:'Ed Sheeran', note:'For when I look at you 💕', freqs:[523,587,659,698,784] },
-      { icon:'🎶', name:'Tum Hi Ho', artist:'Arijit Singh', note:'Our song 🌸', freqs:[440,494,523,587,659] },
-      { icon:'🎵', name:'A Thousand Years', artist:'Christina Perri', note:'Because I\'ve loved you for a thousand years 💖', freqs:[587,659,740,784,880] },
-      { icon:'🎶', name:'Tumse Hi', artist:'Mohit Chauhan', note:'तिमीबिना अधूरो छु 💭', freqs:[392,440,494,523,587] },
-      { icon:'🎵', name:'Love Story', artist:'Taylor Swift', note:'Our beginning 🌹', freqs:[659,740,784,880,988] },
-      { icon:'🎶', name:'तिम्रो माया', artist:'Utsav for Ankita', note:'Original — only for you ✨', freqs:[523,659,784,880,1047] }
-    ];
-
-    const list = $('playlistItems');
-    let activeIdx = -1, playInt = null, progress = 0;
-
-    tracks.forEach((t, i) => {
-      const item = el('div', 'playlist-item');
-      item.innerHTML = `
-        <span class="playlist-item-icon">${t.icon}</span>
-        <div class="playlist-item-info">
-          <div class="playlist-item-name">${t.name}</div>
-          <div class="playlist-item-artist">${t.artist}</div>
-          <div class="playlist-item-note">${t.note}</div>
-        </div>
-        <span>${i === activeIdx ? '⏸' : '▶️'}</span>
-      `;
-      item.addEventListener('click', () => {
-        document.querySelectorAll('.playlist-item').forEach(el => el.classList.remove('active'));
-        item.classList.add('active');
-        activeIdx = i;
-        playTrack(t, item);
-      });
-      list.appendChild(item);
-    });
-
-    function playTrack(t) {
-      $('trackName').textContent   = t.name;
-      $('trackArtist').textContent = t.artist;
-      $('vinyl').classList.add('spinning');
-      clearInterval(playInt);
-      progress = 0;
-      $('trackProgress').style.width = '0%';
-
-      // Play a mini melody
-      t.freqs.forEach((f, i) => AudioEngine.sfx.click && AudioEngine.playTone && AudioEngine.sfx.click());
-      t.freqs.forEach((f, i) => {
-        try {
-          setTimeout(() => {
-            // Use the AudioEngine to play the note
-            const ctx2 = new (window.AudioContext || window.webkitAudioContext)();
-            const osc = ctx2.createOscillator();
-            const gain = ctx2.createGain();
-            osc.connect(gain);
-            gain.connect(ctx2.destination);
-            osc.type = 'sine';
-            osc.frequency.value = f;
-            gain.gain.setValueAtTime(0.12, ctx2.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.001, ctx2.currentTime + 0.6);
-            osc.start();
-            osc.stop(ctx2.currentTime + 0.7);
-          }, i * 250);
-        } catch(e) {}
-      });
-
-      playInt = setInterval(() => {
-        progress = Math.min(100, progress + 0.5);
-        $('trackProgress').style.width = progress + '%';
-        if (progress >= 100) { progress = 0; }
-      }, 100);
-
-      toast('🎵 Now playing: ' + t.name + ' — ' + t.artist);
-    }
-  }
-
-  // =====================================================
   // FOOTER ANIMATED HEARTS
   // =====================================================
   function initFooterHearts() {
@@ -1425,7 +1405,7 @@
   });
 
   // =====================================================
-  // SWIPE SUPPORT FOR MAZE & SNAKE
+  // SWIPE SUPPORT FOR MAZE & SNAKE (optional)
   // =====================================================
   function addSwipeSupport(element, callbacks) {
     let startX, startY;
@@ -1446,198 +1426,133 @@
   }
 
   // =====================================================
-  // INIT ALL
+  // LIVE LOVE TIMER (Dec 10, 2024)
   // =====================================================
-  function init() {
+  function initLiveTimer() {
+    const START = new Date('2024-12-10T00:00:00');
+
+    const messages = [
+      "Every second I love you more 💖",
+      "That's a lot of heartbeats for you 💓",
+      "और कितने seconds? हमेशा के लिए 💕",
+      "सधैं तिम्रै हुनेछु ♾️",
+      "Each second is a memory made 🌸",
+      "Time flies when you're loved this much ✨",
+      "तिम्रो माया मा डुबेको छु 💗",
+      "More seconds = more love 🌹",
+    ];
+
+    let lastSec = -1, msgIdx = 0;
+
+    function pad(n) { return String(n).padStart(2, '0'); }
+
+    function tick() {
+      const now    = Date.now();
+      const diff   = Math.floor((now - START.getTime()) / 1000);
+      const days   = Math.floor(diff / 86400);
+      const hours  = Math.floor((diff % 86400) / 3600);
+      const mins   = Math.floor((diff % 3600) / 60);
+      const secs   = diff % 60;
+
+      const dEl = document.getElementById('tDays');
+      const hEl = document.getElementById('tHours');
+      const mEl = document.getElementById('tMins');
+      const sEl = document.getElementById('tSecs');
+      const tEl = document.getElementById('tTotalSecs');
+      const mMsg = document.getElementById('timerMessage');
+
+      if (!dEl) return;
+
+      dEl.textContent = days;
+      hEl.textContent = pad(hours);
+      mEl.textContent = pad(mins);
+      sEl.textContent = pad(secs);
+      if (tEl) tEl.textContent = diff.toLocaleString();
+
+      // Flip animation on second change
+      if (secs !== lastSec) {
+        lastSec = secs;
+        sEl.style.transform = 'scale(1.2)';
+        setTimeout(() => { sEl.style.transform = ''; }, 150);
+
+        // Rotate message every 15 seconds
+        if (secs % 15 === 0 && mMsg) {
+          mMsg.style.opacity = '0';
+          setTimeout(() => {
+            mMsg.textContent = messages[msgIdx % messages.length];
+            mMsg.style.opacity = '1';
+            msgIdx++;
+          }, 500);
+        }
+      }
+    }
+
+    // Start immediately if DOM ready, else wait
+    function start() {
+      if (document.getElementById('tDays')) {
+        tick();
+        setInterval(tick, 1000);
+        // Set initial message
+        const mMsg = document.getElementById('timerMessage');
+        if (mMsg) mMsg.textContent = messages[0];
+      } else {
+        setTimeout(start, 500);
+      }
+    }
+
+    start();
+  }
+
+  // =====================================================
+  // INIT ALL (after welcome screen)
+  // =====================================================
+  function initAll() {
+    // These run immediately after startBtn click
     initTrail();
     initParticles();
-    initWelcome();
     initMusicToggle();
     initThemeToggle();
     updateStats();
     initFooterHearts();
+    initLiveTimer();          // timer runs on its own interval
 
-    // Games & features (init after welcome screen hides main content)
-    const observer = new MutationObserver(() => {
-      if (!$('mainApp').classList.contains('hidden')) {
-        initMaze();
-        initMemory();
-        initCatch();
-        initSnake();
-        initQuiz();
-        initFortune();
-        initKissCounter();
-        initClicker();
-        initLetterGenerator();
-        initGallery();
-        initReasons();
-        initMusicPlayer();
-        observer.disconnect();
-      }
-    });
-    observer.observe($('mainApp'), { attributes: true, attributeFilter: ['class'] });
-  }
-
-  // Wait for DOM
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
-  } else {
-    init();
-  }
-
-  // Expose AudioEngine for internal modules
-  window._AudioEngine = AudioEngine;
-
-})();
-
-// =====================================================
-// LIVE LOVE TIMER — Dec 10, 2024
-// =====================================================
-(function initLiveTimer() {
-  const START = new Date('2024-12-10T00:00:00');
-
-  const messages = [
-    "Every second I love you more 💖",
-    "That's a lot of heartbeats for you 💓",
-    "और कितने seconds? हमेशा के लिए 💕",
-    "सधैं तिम्रै हुनेछु ♾️",
-    "Each second is a memory made 🌸",
-    "Time flies when you're loved this much ✨",
-    "तिम्रो माया मा डुबेको छु 💗",
-    "More seconds = more love 🌹",
-  ];
-
-  let lastSec = -1, msgIdx = 0;
-
-  function pad(n) { return String(n).padStart(2, '0'); }
-
-  function tick() {
-    const now    = Date.now();
-    const diff   = Math.floor((now - START.getTime()) / 1000);
-    const days   = Math.floor(diff / 86400);
-    const hours  = Math.floor((diff % 86400) / 3600);
-    const mins   = Math.floor((diff % 3600) / 60);
-    const secs   = diff % 60;
-
-    const dEl = document.getElementById('tDays');
-    const hEl = document.getElementById('tHours');
-    const mEl = document.getElementById('tMins');
-    const sEl = document.getElementById('tSecs');
-    const tEl = document.getElementById('tTotalSecs');
-    const mMsg = document.getElementById('timerMessage');
-
-    if (!dEl) return;
-
-    dEl.textContent = days;
-    hEl.textContent = pad(hours);
-    mEl.textContent = pad(mins);
-    sEl.textContent = pad(secs);
-    if (tEl) tEl.textContent = diff.toLocaleString();
-
-    // Flip animation on second change
-    if (secs !== lastSec) {
-      lastSec = secs;
-      sEl.style.transform = 'scale(1.2)';
-      setTimeout(() => { sEl.style.transform = ''; }, 150);
-
-      // Rotate message every 15 seconds
-      if (secs % 15 === 0 && mMsg) {
-        mMsg.style.opacity = '0';
-        setTimeout(() => {
-          mMsg.textContent = messages[msgIdx % messages.length];
-          mMsg.style.opacity = '1';
-          msgIdx++;
-        }, 500);
-      }
-    }
-  }
-// === YOUR ENTIRE ORIGINAL SCRIPT CODE (everything you sent) ===
-// Paste all your code from (function () { ... })(); and the timer part here
-
-// === ADD THESE TWO NEW FUNCTIONS AT THE VERY BOTTOM (before the closing }) ===
-
-// PLAYABLE SONGS
-const playerAudio = document.getElementById('playerAudio');
-const playlistTracks = [
-  { name: "Perfect - Ed Sheeran", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" },
-  { name: "Tum Hi Ho", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3" },
-  { name: "A Thousand Years", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-16.mp3" },
-  { name: "Tumse Hi", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3" },
-  { name: "Love Story", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-18.mp3" },
-  { name: "तिम्रो माया (Original)", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-7.mp3" }
-];
-
-function initMusicPlayer() {
-  const container = document.getElementById('playlistItems');
-  playlistTracks.forEach(track => {
-    const div = document.createElement('div');
-    div.className = 'playlist-item';
-    div.innerHTML = `<span>🎵</span><div><div class="playlist-item-name">${track.name}</div></div>`;
-    div.onclick = () => {
-      playerAudio.src = track.src;
-      playerAudio.play();
-      document.querySelectorAll('.playlist-item').forEach(i => i.classList.remove('active'));
-      div.classList.add('active');
-      toast(`🎵 Playing: ${track.name}`);
-    };
-    container.appendChild(div);
-  });
-}
-
-// LIVE GALLERY (public photos + upload)
-function initGallery() {
-  const gallery = document.getElementById('photoGallery');
-  
-  // Public photos everyone sees immediately
-  const publicPhotos = [
-    "https://picsum.photos/id/1015/600/600", "https://picsum.photos/id/102/600/600",
-    "https://picsum.photos/id/201/600/600", "https://picsum.photos/id/29/600/600",
-    "https://picsum.photos/id/133/600/600", "https://picsum.photos/id/160/600/600",
-    "https://picsum.photos/id/180/600/600", "https://picsum.photos/id/201/600/600"
-  ];
-  publicPhotos.forEach(src => {
-    const img = document.createElement('img');
-    img.src = src;
-    img.className = 'gallery-photo';
-    gallery.appendChild(img);
-  });
-
-  // Personal upload
-  document.getElementById('photoUpload').addEventListener('change', e => {
-    Array.from(e.target.files).forEach(file => {
-      const reader = new FileReader();
-      reader.onload = ev => {
-        const img = document.createElement('img');
-        img.src = ev.target.result;
-        img.className = 'gallery-photo';
-        gallery.appendChild(img);
-      };
-      reader.readAsDataURL(file);
-    });
-    toast('📸 Photos added successfully!');
-  });
-}
-
-// Call them after welcome
-document.getElementById('startBtn').addEventListener('click', () => {
-  // your original welcome code...
-  setTimeout(() => {
+    // Games & features that need mainApp visible
+    initMaze();
+    initMemory();
+    initCatch();
+    initSnake();
+    initQuiz();
+    initFortune();
+    initKissCounter();
+    initClicker();
+    initLetterGenerator();
     initMusicPlayer();
     initGallery();
-  }, 800);
-});
-  // Start immediately and also after DOM is fully ready
-  function start() {
-    if (document.getElementById('tDays')) {
-      tick();
-      setInterval(tick, 1000);
-      // Set initial message
-      const mMsg = document.getElementById('timerMessage');
-      if (mMsg) mMsg.textContent = messages[0];
-    } else {
-      setTimeout(start, 500);
-    }
+    initReasons();
   }
 
-  start();
+  // =====================================================
+  // WELCOME SCREEN TRIGGER
+  // =====================================================
+  function initWelcomeAndStart() {
+    initWelcome();
+
+    // When mainApp becomes visible, run initAll
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach(m => {
+        if (m.attributeName === 'class' && !$('mainApp').classList.contains('hidden')) {
+          initAll();
+          observer.disconnect();
+        }
+      });
+    });
+    observer.observe($('mainApp'), { attributes: true });
+  }
+
+  // Start everything
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initWelcomeAndStart);
+  } else {
+    initWelcomeAndStart();
+  }
 })();
