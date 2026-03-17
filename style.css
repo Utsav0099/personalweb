@@ -1676,3 +1676,14 @@ textarea#letterSeed:focus { border-color: var(--pink1); }
   .timer-num  { font-size: 2rem; }
   .timer-sep  { font-size: 1.8rem; }
 }
+/* Paste your entire original CSS here (the big block that starts with *, *::before... ) */
+
+/* === COMPACT GAME FIXES (added at the bottom) === */
+.game-card { padding: 18px !important; margin-bottom: 30px; }
+#mazeCanvas, #snakeCanvas { width: 280px !important; height: 280px !important; max-width: 100%; }
+.memory-grid { grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.photo-gallery { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 10px; }
+.gallery-photo { height: 160px; object-fit: cover; }
+
+/* iOS emoji style */
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
