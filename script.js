@@ -49,10 +49,9 @@
       snakeEat() { playTone(700,'sine',0.1,0.2); playTone(900,'sine',0.1,0.2,0.06); },
       snakeDie() { [440,330,220,110].forEach((f,i)=>playTone(f,'sawtooth',0.2,0.25,i*0.1)); },
       catch()    { chord([784,988], 0.2, 0.25); },
-      bgHum()    {} // placeholder
     };
 
-    // Ambient love melody (arpeggios in background)
+    // Ambient love melody
     let bgInterval = null;
     const melody = [523,659,784,659,880,784,659,523,587,740,880,740];
     let mIdx = 0;
@@ -117,7 +116,6 @@
     hearts: parseInt(localStorage.getItem('hearts') || '0'),
     lovePoints: parseInt(localStorage.getItem('lovePoints') || '0'),
     streak: 0,
-    totalClicks: 0,
     musicOn: false
   };
 
@@ -133,12 +131,10 @@
     $('lovePoints').textContent  = state.lovePoints;
     $('clickerPoints').textContent = state.lovePoints;
 
-    // Days counting from Dec 10, 2024
     const start = new Date('2024-12-10T00:00:00');
     const diff  = Math.floor((Date.now() - start) / (1000*60*60*24));
     $('daysCount').textContent = diff;
 
-    // Mini love meter
     const pct = Math.min(100, 60 + (state.kisses + state.hearts) % 40);
     $('miniMeter').style.width = pct + '%';
     $('miniPercent').textContent = '∞%';
@@ -174,7 +170,7 @@
         const size = (1 - i / points.length) * 12 + 4;
         ctx.globalAlpha = alpha;
         if (p.emoji) {
-          ctx.font = `${size * 2}px serif`;
+          ctx.font = `${size * 2}px "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif`;
           ctx.fillText(p.emoji, p.x - size, p.y + size);
         } else {
           ctx.beginPath();
@@ -320,7 +316,6 @@
     const COLS   = 8;
     const ROWS   = 8;
 
-    // Generate maze using DFS
     function generateMaze(cols, rows) {
       const grid = Array.from({ length: rows }, (_, r) =>
         Array.from({ length: cols }, (_, c) => ({
@@ -385,14 +380,12 @@
     function drawMaze() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // Background gradient
       const bg = ctx.createLinearGradient(0,0,canvas.width,canvas.height);
       bg.addColorStop(0, 'rgba(255,240,246,0.6)');
       bg.addColorStop(1, 'rgba(255,182,193,0.4)');
       ctx.fillStyle = bg;
       ctx.fillRect(0,0,canvas.width,canvas.height);
 
-      // Goal glow
       ctx.save();
       const gx = (COLS-1)*CELL+CELL/2, gy = (ROWS-1)*CELL+CELL/2;
       const grd = ctx.createRadialGradient(gx,gy,2,gx,gy,CELL);
@@ -402,7 +395,6 @@
       ctx.fillRect(0,0,canvas.width,canvas.height);
       ctx.restore();
 
-      // Walls
       ctx.strokeStyle = 'rgba(201,24,74,0.8)';
       ctx.lineWidth = 2.5;
       ctx.lineCap = 'round';
@@ -418,13 +410,11 @@
         }
       }
 
-      // Goal
-      ctx.font = `${CELL*0.7}px serif`;
+      ctx.font = `${CELL*0.7}px "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif`;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       ctx.fillText('💖', (COLS-1)*CELL+CELL/2, (ROWS-1)*CELL+CELL/2);
 
-      // Player
       const px = player.c*CELL+CELL/2, py = player.r*CELL+CELL/2;
       const grad = ctx.createRadialGradient(px,py,2,px,py,CELL*0.38);
       grad.addColorStop(0,'#ff4d8d');
@@ -433,7 +423,7 @@
       ctx.arc(px, py, CELL*0.32, 0, Math.PI*2);
       ctx.fillStyle = grad;
       ctx.fill();
-      ctx.font = `${CELL*0.5}px serif`;
+      ctx.font = `${CELL*0.5}px "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif`;
       ctx.fillText('💗', px, py+2);
     }
 
@@ -622,7 +612,6 @@
 
       zone.appendChild(t);
 
-      // Move to new position every 600ms
       const moveInt = setInterval(() => {
         if (!alive || !active) { clearInterval(moveInt); return; }
         const nx = Math.random() * (zone.clientWidth - 50);
@@ -631,7 +620,6 @@
         t.style.top  = ny + 'px';
       }, 600);
 
-      // Remove after 2s if not caught
       setTimeout(() => {
         if (!alive) return;
         alive = false;
@@ -660,7 +648,6 @@
       AudioEngine.sfx.click();
       gameInt = setInterval(spawnTarget, 900);
 
-      // End after 30s
       setTimeout(() => {
         clearInterval(gameInt);
         active = false;
@@ -710,26 +697,22 @@
     }
 
     function draw() {
-      // Background
       const bg = ctx.createLinearGradient(0,0,canvas.width,canvas.height);
       bg.addColorStop(0,'rgba(255,240,246,0.7)');
       bg.addColorStop(1,'rgba(255,220,235,0.7)');
       ctx.fillStyle = bg;
       ctx.fillRect(0,0,canvas.width,canvas.height);
 
-      // Grid
       ctx.strokeStyle = 'rgba(255,77,141,0.08)';
       ctx.lineWidth = 0.5;
       for (let x = 0; x <= COLS; x++) { ctx.beginPath(); ctx.moveTo(x*CELL,0); ctx.lineTo(x*CELL,canvas.height); ctx.stroke(); }
       for (let y = 0; y <= ROWS; y++) { ctx.beginPath(); ctx.moveTo(0,y*CELL); ctx.lineTo(canvas.width,y*CELL); ctx.stroke(); }
 
-      // Food
-      ctx.font = `${CELL*0.9}px serif`;
+      ctx.font = `${CELL*0.9}px "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif`;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       ctx.fillText('💖', food.x*CELL+CELL/2, food.y*CELL+CELL/2);
 
-      // Snake body
       snake.forEach((seg, i) => {
         const ratio = 1 - i / snake.length;
         ctx.fillStyle = `hsl(${330 + i*3}, 80%, ${40 + ratio*25}%)`;
@@ -739,7 +722,6 @@
         ctx.fill();
 
         if (i === 0) {
-          // Eyes
           ctx.fillStyle = 'white';
           ctx.beginPath();
           ctx.arc(seg.x*CELL+CELL*0.3, seg.y*CELL+CELL*0.35, 3, 0, Math.PI*2); ctx.fill();
@@ -772,9 +754,7 @@
       dir = { ...nextDir };
       const head = { x: snake[0].x + dir.x, y: snake[0].y + dir.y };
 
-      // Wall collision
       if (head.x < 0 || head.x >= COLS || head.y < 0 || head.y >= ROWS) return die();
-      // Self collision
       if (snake.some(s => s.x === head.x && s.y === head.y)) return die();
 
       snake.unshift(head);
@@ -1056,7 +1036,6 @@
       heart.classList.remove('clicked');
       requestAnimationFrame(() => heart.classList.add('clicked'));
 
-      // Floating +5
       const plus = el('div', 'float-heart', '+5 💖');
       plus.style.cssText = `left:${e.clientX}px;top:${e.clientY}px;font-size:16px;animation-duration:1.2s;`;
       $('floatHearts').appendChild(plus);
@@ -1079,7 +1058,6 @@
       });
     });
 
-    // Auto increment
     setInterval(() => {
       if (autoRate > 0) {
         state.lovePoints += autoRate / 10;
@@ -1160,10 +1138,10 @@
     const playerAudio = $('playerAudio');
     const playlistTracks = [
       { name: "Perfect - Ed Sheeran", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" },
-      { name: "Tum Hi Ho", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3" },
-      { name: "A Thousand Years", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-16.mp3" },
-      { name: "Tumse Hi", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3" },
-      { name: "Love Story", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-18.mp3" },
+      { name: "Tum Hi Ho - Arijit Singh", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3" },
+      { name: "A Thousand Years - Christina Perri", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-16.mp3" },
+      { name: "Tumse Hi - Mohit Chauhan", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3" },
+      { name: "Love Story - Taylor Swift", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-18.mp3" },
       { name: "तिम्रो माया (Original)", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-7.mp3" }
     ];
 
@@ -1181,7 +1159,6 @@
       container.appendChild(div);
     });
 
-    // Update now‑playing display
     playerAudio.addEventListener('play', () => {
       $('trackName').textContent = playlistTracks.find(t => playerAudio.src.includes(t.src))?.name || 'Unknown';
       $('vinyl').classList.add('spinning');
@@ -1189,7 +1166,6 @@
     playerAudio.addEventListener('pause', () => $('vinyl').classList.remove('spinning'));
     playerAudio.addEventListener('ended', () => $('vinyl').classList.remove('spinning'));
 
-    // Progress bar (fake because audio is remote)
     setInterval(() => {
       if (!playerAudio.paused && playerAudio.duration) {
         const prog = (playerAudio.currentTime / playerAudio.duration) * 100;
@@ -1201,41 +1177,32 @@
   }
 
   // =====================================================
-  // PHOTO GALLERY (public + upload)
+  // PHOTO GALLERY (persistent via localStorage)
   // =====================================================
   function initGallery() {
     const gallery = $('photoGallery');
+    const STORAGE_KEY = 'love_gallery_photos';
 
-    // Public photos everyone sees immediately
-    const publicPhotos = [
-      "https://picsum.photos/id/1015/600/600", "https://picsum.photos/id/102/600/600",
-      "https://picsum.photos/id/201/600/600", "https://picsum.photos/id/29/600/600",
-      "https://picsum.photos/id/133/600/600", "https://picsum.photos/id/160/600/600",
-      "https://picsum.photos/id/180/600/600", "https://picsum.photos/id/201/600/600"
-    ];
-    publicPhotos.forEach(src => {
-      const img = document.createElement('img');
-      img.src = src;
-      img.className = 'gallery-photo';
-      img.addEventListener('click', () => openFullscreen(img));
-      gallery.appendChild(img);
-    });
-
-    // Personal upload
-    $('photoUpload').addEventListener('change', e => {
-      Array.from(e.target.files).forEach(file => {
-        const reader = new FileReader();
-        reader.onload = ev => {
+    // Load saved images from localStorage
+    function loadPhotos() {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        const photos = JSON.parse(saved);
+        photos.forEach(src => {
           const img = document.createElement('img');
-          img.src = ev.target.result;
+          img.src = src;
           img.className = 'gallery-photo';
           img.addEventListener('click', () => openFullscreen(img));
           gallery.appendChild(img);
-        };
-        reader.readAsDataURL(file);
-      });
-      toast('📸 Photos added successfully!');
-    });
+        });
+      }
+    }
+
+    // Save all current images to localStorage
+    function savePhotos() {
+      const images = Array.from(gallery.querySelectorAll('img')).map(img => img.src);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(images));
+    }
 
     function openFullscreen(img) {
       const overlay = el('div');
@@ -1247,6 +1214,85 @@
       overlay.addEventListener('click', () => overlay.remove());
       document.body.appendChild(overlay);
     }
+
+    // Upload handler
+    $('photoUpload').addEventListener('change', e => {
+      Array.from(e.target.files).forEach(file => {
+        const reader = new FileReader();
+        reader.onload = ev => {
+          const img = document.createElement('img');
+          img.src = ev.target.result;
+          img.className = 'gallery-photo';
+          img.addEventListener('click', () => openFullscreen(img));
+          gallery.appendChild(img);
+          savePhotos();
+        };
+        reader.readAsDataURL(file);
+      });
+      toast('📸 Photos added and saved!');
+    });
+
+    // Load existing photos on init
+    loadPhotos();
+  }
+
+  // =====================================================
+  // LOVE CALCULATOR
+  // =====================================================
+  function initLoveCalc() {
+    $('loveCalcBtn').addEventListener('click', () => {
+      const percent = Math.floor(Math.random() * 41) + 80; // 80-120%
+      const display = percent > 100 ? '∞' : percent + '%';
+      const messages = [
+        'Perfect match! 💞',
+        'Made for each other! 💖',
+        'Unbreakable bond! 💕',
+        'Love beyond measure! 💗'
+      ];
+      $('loveResult').innerHTML = `✨ ${display} Compatibility ✨<br>${messages[Math.floor(Math.random() * messages.length)]}`;
+      AudioEngine.sfx.fortune();
+      burst(30);
+    });
+  }
+
+  // =====================================================
+  // MESSAGE WALL (persistent via localStorage)
+  // =====================================================
+  function initMessageWall() {
+    const wall = $('wallMessages');
+    const input = $('wallMessage');
+    const postBtn = $('postMessageBtn');
+    const STORAGE_KEY = 'love_wall_messages';
+
+    function loadMessages() {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        const msgs = JSON.parse(saved);
+        msgs.forEach(msg => addMessageToDOM(msg));
+      }
+    }
+
+    function saveMessages() {
+      const msgs = Array.from(wall.querySelectorAll('.wall-message-item')).map(el => el.textContent);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(msgs));
+    }
+
+    function addMessageToDOM(text) {
+      const msgDiv = el('div', 'wall-message-item', text);
+      wall.appendChild(msgDiv);
+    }
+
+    postBtn.addEventListener('click', () => {
+      const text = input.value.trim();
+      if (!text) return;
+      addMessageToDOM(text);
+      saveMessages();
+      input.value = '';
+      AudioEngine.sfx.click();
+      toast('💬 Message posted!');
+    });
+
+    loadMessages();
   }
 
   // =====================================================
@@ -1405,27 +1451,6 @@
   });
 
   // =====================================================
-  // SWIPE SUPPORT FOR MAZE & SNAKE (optional)
-  // =====================================================
-  function addSwipeSupport(element, callbacks) {
-    let startX, startY;
-    element.addEventListener('touchstart', e => {
-      startX = e.touches[0].clientX;
-      startY = e.touches[0].clientY;
-    }, { passive: true });
-
-    element.addEventListener('touchend', e => {
-      const dx = e.changedTouches[0].clientX - startX;
-      const dy = e.changedTouches[0].clientY - startY;
-      if (Math.abs(dx) > Math.abs(dy)) {
-        dx > 0 ? callbacks.right() : callbacks.left();
-      } else {
-        dy > 0 ? callbacks.down() : callbacks.up();
-      }
-    }, { passive: true });
-  }
-
-  // =====================================================
   // LIVE LOVE TIMER (Dec 10, 2024)
   // =====================================================
   function initLiveTimer() {
@@ -1469,13 +1494,11 @@
       sEl.textContent = pad(secs);
       if (tEl) tEl.textContent = diff.toLocaleString();
 
-      // Flip animation on second change
       if (secs !== lastSec) {
         lastSec = secs;
         sEl.style.transform = 'scale(1.2)';
         setTimeout(() => { sEl.style.transform = ''; }, 150);
 
-        // Rotate message every 15 seconds
         if (secs % 15 === 0 && mMsg) {
           mMsg.style.opacity = '0';
           setTimeout(() => {
@@ -1487,12 +1510,10 @@
       }
     }
 
-    // Start immediately if DOM ready, else wait
     function start() {
       if (document.getElementById('tDays')) {
         tick();
         setInterval(tick, 1000);
-        // Set initial message
         const mMsg = document.getElementById('timerMessage');
         if (mMsg) mMsg.textContent = messages[0];
       } else {
@@ -1507,16 +1528,14 @@
   // INIT ALL (after welcome screen)
   // =====================================================
   function initAll() {
-    // These run immediately after startBtn click
     initTrail();
     initParticles();
     initMusicToggle();
     initThemeToggle();
     updateStats();
     initFooterHearts();
-    initLiveTimer();          // timer runs on its own interval
+    initLiveTimer();
 
-    // Games & features that need mainApp visible
     initMaze();
     initMemory();
     initCatch();
@@ -1529,6 +1548,8 @@
     initMusicPlayer();
     initGallery();
     initReasons();
+    initLoveCalc();
+    initMessageWall();
   }
 
   // =====================================================
@@ -1537,7 +1558,6 @@
   function initWelcomeAndStart() {
     initWelcome();
 
-    // When mainApp becomes visible, run initAll
     const observer = new MutationObserver((mutations) => {
       mutations.forEach(m => {
         if (m.attributeName === 'class' && !$('mainApp').classList.contains('hidden')) {
@@ -1549,7 +1569,6 @@
     observer.observe($('mainApp'), { attributes: true });
   }
 
-  // Start everything
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initWelcomeAndStart);
   } else {
