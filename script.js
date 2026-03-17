@@ -1551,7 +1551,81 @@
       }
     }
   }
+// === YOUR ENTIRE ORIGINAL SCRIPT CODE (everything you sent) ===
+// Paste all your code from (function () { ... })(); and the timer part here
 
+// === ADD THESE TWO NEW FUNCTIONS AT THE VERY BOTTOM (before the closing }) ===
+
+// PLAYABLE SONGS
+const playerAudio = document.getElementById('playerAudio');
+const playlistTracks = [
+  { name: "Perfect - Ed Sheeran", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" },
+  { name: "Tum Hi Ho", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3" },
+  { name: "A Thousand Years", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-16.mp3" },
+  { name: "Tumse Hi", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3" },
+  { name: "Love Story", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-18.mp3" },
+  { name: "तिम्रो माया (Original)", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-7.mp3" }
+];
+
+function initMusicPlayer() {
+  const container = document.getElementById('playlistItems');
+  playlistTracks.forEach(track => {
+    const div = document.createElement('div');
+    div.className = 'playlist-item';
+    div.innerHTML = `<span>🎵</span><div><div class="playlist-item-name">${track.name}</div></div>`;
+    div.onclick = () => {
+      playerAudio.src = track.src;
+      playerAudio.play();
+      document.querySelectorAll('.playlist-item').forEach(i => i.classList.remove('active'));
+      div.classList.add('active');
+      toast(`🎵 Playing: ${track.name}`);
+    };
+    container.appendChild(div);
+  });
+}
+
+// LIVE GALLERY (public photos + upload)
+function initGallery() {
+  const gallery = document.getElementById('photoGallery');
+  
+  // Public photos everyone sees immediately
+  const publicPhotos = [
+    "https://picsum.photos/id/1015/600/600", "https://picsum.photos/id/102/600/600",
+    "https://picsum.photos/id/201/600/600", "https://picsum.photos/id/29/600/600",
+    "https://picsum.photos/id/133/600/600", "https://picsum.photos/id/160/600/600",
+    "https://picsum.photos/id/180/600/600", "https://picsum.photos/id/201/600/600"
+  ];
+  publicPhotos.forEach(src => {
+    const img = document.createElement('img');
+    img.src = src;
+    img.className = 'gallery-photo';
+    gallery.appendChild(img);
+  });
+
+  // Personal upload
+  document.getElementById('photoUpload').addEventListener('change', e => {
+    Array.from(e.target.files).forEach(file => {
+      const reader = new FileReader();
+      reader.onload = ev => {
+        const img = document.createElement('img');
+        img.src = ev.target.result;
+        img.className = 'gallery-photo';
+        gallery.appendChild(img);
+      };
+      reader.readAsDataURL(file);
+    });
+    toast('📸 Photos added successfully!');
+  });
+}
+
+// Call them after welcome
+document.getElementById('startBtn').addEventListener('click', () => {
+  // your original welcome code...
+  setTimeout(() => {
+    initMusicPlayer();
+    initGallery();
+  }, 800);
+});
   // Start immediately and also after DOM is fully ready
   function start() {
     if (document.getElementById('tDays')) {
