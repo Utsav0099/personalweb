@@ -4,7 +4,7 @@
 
 This is not just a website — it's a **digital love explosion** filled with games, kisses, memories, and surprises that will make Ankita smile every single day! 🌹
 
-Made by **Utsav** in Kathmandu with all my heart 💕
+Made by **Utsav** in Butwal with all my heart 💕
 
 ---
 
